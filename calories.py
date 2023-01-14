@@ -27,6 +27,22 @@ def read_calories_for_elves(input_file):
     return
 
 
+def bubble_up(numbers):
+    for index in range(len(numbers)-1):
+        if numbers[index] > numbers[index+1]:
+            numbers[index], numbers[index+1] = numbers[index+1], numbers[index]
+    return
+
+
+def top_n(numbers, n):
+    top_n_numbers = [0]*n
+    for number in numbers:
+        if number > top_n_numbers[0]:
+            top_n_numbers[0] = number
+            bubble_up(top_n_numbers)
+    return top_n_numbers
+
+
 def main(arguments):
     program_name = 'calories'
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -49,13 +65,11 @@ def main(arguments):
 
     if input_file_name:
         max_calories = 0
+        top_elves = 3
         with open(input_file_name, 'r') as input_file:
-            max_calories = 0
-            for calories in read_calories_for_elves(input_file):
-                if calories > max_calories:
-                    max_calories = calories
+            top_3 = top_n(read_calories_for_elves(input_file), top_elves)
 
-        print(f'the elf with the most nutrition had {max_calories} calories.')
+        print(f'the {top_elves} elves with the most nutrition had {sum(top_3)} calories.')
 
 
     return
