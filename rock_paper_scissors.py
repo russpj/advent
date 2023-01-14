@@ -6,6 +6,18 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 
+game_score = {
+    'A': {'X': 3, 'Y': 6, 'Z': 0},
+    'B': {'X': 0, 'Y': 3, 'Z': 6},
+    'C': {'X': 6, 'Y': 0, 'Z': 3}
+}
+
+choice_score = {
+    'X': 1,
+    'Y': 2,
+    'Z': 3
+}
+
 
 def main(arguments):
     program_name = 'rock_paper_scissors'
@@ -29,7 +41,12 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
-            print(f'The input file was {input_file_name}')
+            total_score = 0            
+            for game in input_file:
+                opponent, me = game.strip().split(' ')
+                score = game_score[opponent][me] + choice_score[me]
+                total_score += score
+            print(f'The total score in the rock paper scissors match was {total_score}.')
 
     return
 
