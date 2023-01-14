@@ -12,6 +12,12 @@ game_score = {
     'C': {'X': 6, 'Y': 0, 'Z': 3}
 }
 
+game_choice = {
+    'A': {'X': 'Z', 'Y': 'X', 'Z': 'Y'},
+    'B': {'X': 'X', 'Y': 'Y', 'Z': 'Z'},
+    'C': {'X': 'Y', 'Y': 'Z', 'Z': 'X'}
+}
+
 choice_score = {
     'X': 1,
     'Y': 2,
@@ -43,7 +49,8 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             total_score = 0            
             for game in input_file:
-                opponent, me = game.strip().split(' ')
+                opponent, choice = game.strip().split(' ')
+                me = game_choice[opponent][choice]
                 score = game_score[opponent][me] + choice_score[me]
                 total_score += score
             print(f'The total score in the rock paper scissors match was {total_score}.')
