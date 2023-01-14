@@ -28,7 +28,8 @@ def main(arguments):
             input_file_name = arg
 
     if input_file_name:
-        print(f'The input file was {input_file_name}')
+        with open(input_file_name, 'r') as input_file:
+            print(f'The input file was {input_file_name}')
 
     return
 
