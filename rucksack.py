@@ -9,6 +9,14 @@ from getopt import getopt, GetoptError
 app_name = 'rucksack'
 
 
+def priority(item_type):
+    if item_type >= 'a' and item_type <= 'z':
+        return ord(item_type) - ord('a') + 1
+    if item_type >= 'A'  and item_type <= 'Z':
+        return ord(item_type) - ord('A') + 27
+    return 100
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -31,13 +39,16 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
-            total_score = 0            
-            for game in input_file:
-                opponent, choice = game.strip().split(' ')
-                me = game_choice[opponent][choice]
-                score = game_score[opponent][me] + choice_score[me]
-                total_score += score
-            print(f'The total score in the rock paper scissors match was {total_score}.')
+            sum_priorities = 0
+            for contents in input_file:
+                contents = contents.strip()
+                midpoint = len(contents)//2
+                left = set(contents[:midpoint])
+                right = set(contents[midpoint:])
+                common_items = left.intersection(right)
+                for item in common_items:
+                    sum_priorities += priority(item)
+            print(f'the total priorities is {sum_priorities}')
 
     return
 
