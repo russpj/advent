@@ -40,15 +40,20 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             sum_priorities = 0
+            elf = 0
             for contents in input_file:
-                contents = contents.strip()
-                midpoint = len(contents)//2
-                left = set(contents[:midpoint])
-                right = set(contents[midpoint:])
-                common_items = left.intersection(right)
-                for item in common_items:
-                    sum_priorities += priority(item)
-            print(f'the total priorities is {sum_priorities}')
+                items = set(contents.strip())
+                if elf == 0:
+                    common_items = items
+                common_items = common_items.intersection(items)
+                if elf == 2:
+                    for item in common_items:
+                        sum_priorities += priority(item)
+                    elf = 0
+                else:
+                    elf += 1
+
+            print(f'the total priorities for the badges is {sum_priorities}')
 
     return
 
