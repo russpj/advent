@@ -14,12 +14,13 @@ def parse_assignments(line):
     ranges = line.split(',')
     for range in ranges:
         left, right = range.split('-')
-        assignments.append((left, right))
+        assignments.append((int(left), int(right)))
     return assignments
 
 
 def left_contains_right(left, right):
-    return left[0] <= right[0] and left[1] >= right[1]
+    contains = left[0] <= right[0] and left[1] >= right[1]
+    return contains
 
 
 def main(arguments):
@@ -51,7 +52,7 @@ def main(arguments):
                 second = assignments[1]
                 if left_contains_right(first, second) or left_contains_right(second, first):
                     contains_count += 1
-            print(f'{contains_count} of the assigments had completly overlapping ranges.')
+            print(f'{contains_count} of the assigments had completely overlapping ranges.')
     return
 
 
