@@ -9,6 +9,19 @@ from getopt import getopt, GetoptError
 app_name = 'cleanup'
 
 
+def parse_assignments(line):
+    assignments = []
+    ranges = line.split(',')
+    for range in ranges:
+        left, right = range.split('-')
+        assignments.append((left, right))
+    return assignments
+
+
+def left_contains_right(left, right):
+    return left[0] <= right[0] and left[1] >= right[1]
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -31,7 +44,14 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
-            pass
+            contains_count = 0
+            for line in input_file:
+                assignments = parse_assignments(line.strip())
+                first = assignments[0]
+                second = assignments[1]
+                if left_contains_right(first, second) or left_contains_right(second, first):
+                    contains_count += 1
+            print(f'{contains_count} of the assigments had completly overlapping ranges.')
     return
 
 
