@@ -9,10 +9,56 @@ from getopt import getopt, GetoptError
 app_name = 'stacks'
 
 class stack():
-    def __init__(this):
+    def __init__(this, name=''):
         this.crates = []
-        this.name = ''
+        this.name = name
         return
+
+def create_stacks(lines):
+    stacks = []
+    stack_width = 4
+    name_line = lines[-1]
+    num_stacks = (len(name_line)+stack_width-1)//stack_width
+    for stack_num in range(num_stacks):
+        name = int(name_line[stack_num*stack_width:(stack_num+1)*stack_width])
+        stacks.append(stack(name))
+    
+    return stacks
+
+
+def render_names(stacks):
+    line = ''
+    for stack in stacks:
+        label = f' {stack.name: <3}'
+        line += label
+    return line
+
+def render_crates(stacks, level):
+    line = ''
+    is_output = False
+    for stack in stacks:
+        if level > len(stack.crates):
+            label = f'[{stack.crates[level]}] '
+            line += label
+            is_output = True
+        else:
+            line += '    '
+    if not is_output:
+        line = ''
+    return line
+     
+
+def render_stacks(stacks):
+    output = []
+    output.append(render_names(stacks))
+    crate_level = 0
+    while True:
+        crate_line = render_crates(stacks, crate_level)
+        if not crate_line:
+            break
+        output.append(crate_line)
+        crate_level += 1
+    return output
 
 
 def main(arguments):
@@ -37,6 +83,22 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
+            reading_stacks = True
+            stacks_definition = []
+            for line in input_file:
+                if reading_stacks:
+                    line = line.rstrip('\n')
+                    if len(line) == 0:
+                        reading_stacks = False
+                    else:
+                        stacks_definition.append(line)
+                else:
+                    pass
+            stacks = create_stacks(stacks_definition)
+            picture = render_stacks(stacks)
+            for line in picture:
+                print(line)
+
             print(f'Opened {input_file_name} for input')
     return
 
