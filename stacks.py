@@ -8,6 +8,12 @@ from getopt import getopt, GetoptError
 
 app_name = 'stacks'
 
+class stack():
+    def __init__(this):
+        this.crates = []
+        this.name = ''
+        return
+
 
 def main(arguments):
     program_name = app_name
