@@ -23,6 +23,13 @@ def left_contains_right(left, right):
     return contains
 
 
+def completely_to_the_left(left, right):
+    return left[1] < right[0]
+
+def completely_disjoint(first, second):
+    return completely_to_the_left(first, second) or completely_to_the_left(second, first)
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -45,14 +52,14 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
-            contains_count = 0
+            overlaps_count = 0
             for line in input_file:
                 assignments = parse_assignments(line.strip())
                 first = assignments[0]
                 second = assignments[1]
-                if left_contains_right(first, second) or left_contains_right(second, first):
-                    contains_count += 1
-            print(f'{contains_count} of the assigments had completely overlapping ranges.')
+                if not completely_disjoint(first, second):
+                    overlaps_count += 1
+            print(f'{overlaps_count} of the assigments had overlapping ranges.')
     return
 
 
