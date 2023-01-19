@@ -15,6 +15,15 @@ class stack():
         this.name = name
         return
 
+
+class move():
+    def __init__(this, number, source, destination):
+        this.number = number
+        this.source = source
+        this.destination = destination
+        return
+
+
 def create_stacks(lines):
     stacks = []
     stack_width = 4
@@ -105,10 +114,8 @@ def main(arguments):
                         stacks_definition.append(line)
                 else:
                     matched = instruction_expression.match(line)
-                    number = matched.group(1)
-                    source = matched.group(2)
-                    destination = matched.group(3)
-                    print(f'move {number} from {source} to {destination}')
+                    instruction = move(matched.group(1), matched.group(2), matched.group(3))
+                    move_instructions.append(instruction)
             stacks = create_stacks(stacks_definition)
             picture = render_stacks(stacks)
             for line in picture:
