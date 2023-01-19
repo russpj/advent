@@ -5,6 +5,7 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
+import re
 
 app_name = 'stacks'
 
@@ -93,6 +94,8 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             reading_stacks = True
             stacks_definition = []
+            move_instructions = []
+            instruction_expression = re.compile(r'move (\d) from (\d) to (\d)')
             for line in input_file:
                 if reading_stacks:
                     line = line.rstrip('\n')
@@ -101,7 +104,11 @@ def main(arguments):
                     else:
                         stacks_definition.append(line)
                 else:
-                    pass
+                    matched = instruction_expression.match(line)
+                    number = matched.group(1)
+                    source = matched.group(2)
+                    destination = matched.group(3)
+                    print(f'move {number} from {source} to {destination}')
             stacks = create_stacks(stacks_definition)
             picture = render_stacks(stacks)
             for line in picture:
