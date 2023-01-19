@@ -45,7 +45,7 @@ def render_crates(stacks, level):
     line = ''
     is_output = False
     for stack in stacks:
-        if level > len(stack.crates):
+        if level < len(stack.crates):
             label = f'[{stack.crates[level]}] '
             line += label
             is_output = True
