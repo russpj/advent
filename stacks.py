@@ -66,7 +66,7 @@ def render_stacks(stacks):
             break
         output.append(crate_line)
         crate_level += 1
-    return output
+    return reversed(output)
 
 
 def main(arguments):
