@@ -23,6 +23,14 @@ def create_stacks(lines):
         name = int(name_line[stack_num*stack_width:(stack_num+1)*stack_width])
         stacks.append(stack(name))
     
+    for line in list(reversed(lines))[1:]:
+        for stack_num in range(num_stacks):
+            candidate = line[stack_num*stack_width:(stack_num+1)*stack_width]
+            left_bracket = candidate.find('[')
+            right_bracket = candidate.find(']')
+            if left_bracket >= 0 and right_bracket >= 0:
+                crate_name = candidate[left_bracket+1: right_bracket]
+                stacks[stack_num].crates.append(crate_name)
     return stacks
 
 
