@@ -23,6 +23,9 @@ class move():
         this.destination = destination
         return
 
+    def print(this):
+        print(f'move {this.number} from {this.source} to {this.destination}')
+
 
 def create_stacks(lines):
     stacks = []
@@ -120,8 +123,9 @@ def main(arguments):
             picture = render_stacks(stacks)
             for line in picture:
                 print(line)
+            for instruction in move_instructions:
+                instruction.print()
 
-            print(f'Opened {input_file_name} for input')
     return
 
 
