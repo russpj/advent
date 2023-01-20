@@ -26,6 +26,13 @@ class move():
     def print(this):
         print(f'move {this.number} from {this.source} to {this.destination}')
 
+    def execute(this, stacks):
+        source_stack = next(stack for stack in stacks if stack.name == this.source)
+        destination_stack = next(stack for stack in stacks if stack.name == this.destination)
+        lowest_crate = len(source_stack.crates) - this.number
+        destination_stack.crates.extend(source_stack.crates[lowest_crate:])
+        del(source_stack.crates[lowest_crate:])
+
 
 def create_stacks(lines):
     stacks = []
@@ -33,7 +40,7 @@ def create_stacks(lines):
     name_line = lines[-1]
     num_stacks = (len(name_line)+stack_width-1)//stack_width
     for stack_num in range(num_stacks):
-        name = int(name_line[stack_num*stack_width:(stack_num+1)*stack_width])
+        name = name_line[stack_num*stack_width:(stack_num+1)*stack_width].strip()
         stacks.append(stack(name))
     
     for line in list(reversed(lines))[1:]:
@@ -82,6 +89,12 @@ def render_stacks(stacks):
     return reversed(output)
 
 
+def print_stacks(stacks):
+    picture = render_stacks(stacks)
+    for line in picture:
+        print(line)
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -117,14 +130,14 @@ def main(arguments):
                         stacks_definition.append(line)
                 else:
                     matched = instruction_expression.match(line)
-                    instruction = move(matched.group(1), matched.group(2), matched.group(3))
+                    instruction = move(int(matched.group(1)), matched.group(2), matched.group(3))
                     move_instructions.append(instruction)
             stacks = create_stacks(stacks_definition)
-            picture = render_stacks(stacks)
-            for line in picture:
-                print(line)
+            print_stacks(stacks)
             for instruction in move_instructions:
                 instruction.print()
+                instruction.execute(stacks)
+                print_stacks(stacks)
 
     return
 
