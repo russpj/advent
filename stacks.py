@@ -96,6 +96,13 @@ def print_stacks(stacks):
         print(line)
 
 
+def top_crates(stacks):
+    crates = ''
+    for stack in stacks:
+        crates += stack.crates[-1]
+    return crates
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -139,6 +146,8 @@ def main(arguments):
                 instruction.print()
                 instruction.execute(stacks)
                 print_stacks(stacks)
+
+            print(f'The top crates are {top_crates(stacks)}')
 
     return
 
