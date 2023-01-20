@@ -128,7 +128,7 @@ def main(arguments):
             reading_stacks = True
             stacks_definition = []
             move_instructions = []
-            instruction_expression = re.compile(r'move (\d) from (\d) to (\d)')
+            instruction_expression = re.compile(r'move (\d+) from (\d+) to (\d+)')
             for line in input_file:
                 if reading_stacks:
                     line = line.rstrip('\n')
