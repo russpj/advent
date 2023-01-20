@@ -30,7 +30,8 @@ class move():
         source_stack = next(stack for stack in stacks if stack.name == this.source)
         destination_stack = next(stack for stack in stacks if stack.name == this.destination)
         lowest_crate = len(source_stack.crates) - this.number
-        destination_stack.crates.extend(source_stack.crates[lowest_crate:])
+        for crate in reversed(source_stack.crates[lowest_crate:]):
+            destination_stack.crates.append(crate)
         del(source_stack.crates[lowest_crate:])
 
 
