@@ -43,20 +43,23 @@ class Shell():
         this.root_directory = Directory(None, '/')
         this.workind_directory = this.root_directory
         this.input_file = input_file
-        this.current_command = input_file.readline()
+        this.read_next_command()
 
     def has_command(this):
-        return this.current_command != None
+        return this.current_command != None and len(this.current_command) > 0
 
-    def execute_command(this):
-        if this.current_command is None:
+    def read_next_command(this):
+        next_command = this.input_file.readline()
+        while next_command and next_command[0] != '$':
+            next_command = this.input_file.readline()
+        this.current_command = next_command.strip()
+
+    def execute_command(this):S
+        if not this.has_command():
             return 
         if this.current_command[0] == '$':
-            this.current_command = this.input_file.readline()
-            while this.current_command and this.current_command[0] != '$':
-                this.current_command = this.input_file.readline()
-        
-   
+            print(f'Executing: {this.current_command}')
+            this.read_next_command()
 
 
 def main(arguments):
