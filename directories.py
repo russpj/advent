@@ -40,7 +40,7 @@ class Directory():
 
 class Shell():
     def __init__(this, input_file):
-        this.root_directory = Directory('\'')
+        this.root_directory = Directory(None, '/')
         this.workind_directory = this.root_directory
         this.input_file = input_file
         this.current_command = input_file.readline()
@@ -82,6 +82,9 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            shell = Shell(input_file)
+            while shell.has_command():
+                shell.execute_command()
 
     return
 
