@@ -51,6 +51,7 @@ class Shell():
     def read_next_command(this):
         next_command = this.input_file.readline()
         while next_command and next_command[0] != '$':
+            print(f'   Output: {next_command.strip()}')
             next_command = this.input_file.readline()
         this.current_command = next_command.strip()
 
