@@ -54,7 +54,7 @@ class Shell():
             next_command = this.input_file.readline()
         this.current_command = next_command.strip()
 
-    def execute_command(this):S
+    def execute_command(this):
         if not this.has_command():
             return 
         if this.current_command[0] == '$':
