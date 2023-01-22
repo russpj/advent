@@ -48,13 +48,6 @@ class Shell():
     def has_command(this):
         return this.current_command != None and len(this.current_command) > 0
 
-    def read_next_command(this):
-        next_command = this.read_next_line()
-        while next_command and next_command[0] != '$':
-            print(f'   Output: {next_command}')
-            next_command = this.read_next_line()
-        this.current_command = next_command
-
     def read_next_line(this):
         next_line = this.input_file.readline()
         if next_line:
@@ -66,7 +59,17 @@ class Shell():
             return 
         if this.current_command[0] == '$':
             print(f'Executing: {this.current_command}')
-            this.read_next_command()
+            next_line = this.read_next_line()
+            if not next_line or len(next_line) == 0:
+                this.current_command = next_line
+                return
+            while (next_line[0] != '$'):
+                print(f'   Output: {next_line}')
+                next_line = this.read_next_line()
+                if not next_line or len(next_line) == 0:
+                    this.current_command = next_line
+                    return
+            this.current_command = next_line    
 
 
 def main(arguments):
