@@ -57,7 +57,7 @@ def main(arguments):
                 marker = marker_finder()
                 for char in line:
                     num_unique = marker.add_char(char)
-                    if num_unique == 4:
+                    if num_unique == 14:
                         break
                 if num_unique == -1:
                     print(f'No marker found in {marker.prefix}.')
