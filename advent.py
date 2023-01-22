@@ -6,7 +6,8 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 
-app_name = 'advent'
+
+app_name = 'advent.py'
 
 
 def main(arguments):
