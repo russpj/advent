@@ -45,9 +45,18 @@ class Shell():
         this.input_file = input_file
         this.current_command = input_file.readline()
 
+    def has_command(this):
+        return this.current_command != None
 
-
-    
+    def execute_command(this):
+        if this.current_command is None:
+            return 
+        if this.current_command[0] == '$':
+            this.current_command = this.input_file.readline()
+            while this.current_command and this.current_command[0] != '$':
+                this.current_command = this.input_file.readline()
+        
+   
 
 
 def main(arguments):
