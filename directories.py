@@ -43,7 +43,7 @@ class Shell():
         this.root_directory = Directory(None, '/')
         this.workind_directory = this.root_directory
         this.input_file = input_file
-        this.read_next_command()
+        this.current_command = this.read_next_line()
 
     def has_command(this):
         return this.current_command != None and len(this.current_command) > 0
