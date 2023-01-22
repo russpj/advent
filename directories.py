@@ -8,6 +8,47 @@ from getopt import getopt, GetoptError
 
 app_name = 'directories.py'
 
+class File():
+    def __init__(this, name, size):
+        this.name = name
+        this.size = size
+        return
+
+class Directory():
+    def __init__(this, parent, name):
+        this.parent = parent
+        this.name = name
+        this.child_directories = []
+        this.files = []
+        this.accumulated_size = 0
+
+    def add_directory(this, name):
+        child = Directory(this, name)
+        this.child_directories.append(child)
+
+    def add_file(this, name, size):
+        file = File(name, size)
+        this.files.append(file)
+        this.update_accumulate_size(size)
+        return
+
+    def update_accumulated_size(this, size):
+        this.accumulate_size += size
+        if this.parent:
+            this.parent.update_accumulated_size(size)
+
+
+class Shell():
+    def __init__(this, input_file):
+        this.root_directory = Directory('\'')
+        this.workind_directory = this.root_directory
+        this.input_file = input_file
+        this.current_command = input_file.readline()
+
+
+
+    
+
 
 def main(arguments):
     program_name = app_name
