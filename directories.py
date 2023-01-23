@@ -5,8 +5,11 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
+import re
+
 
 app_name = 'directories.py'
+
 
 class File():
     def __init__(this, name, size):
@@ -44,6 +47,8 @@ class Shell():
         this.workind_directory = this.root_directory
         this.input_file = input_file
         this.current_command = this.read_next_line()
+        this.ls_command_template = re.compile(r'\$ ls')
+        this.cd_command_template = re.compile(r'\$ cd (.*)$')
 
     def has_command(this):
         return this.current_command != None and len(this.current_command) > 0
@@ -52,28 +57,34 @@ class Shell():
         next_line = this.input_file.readline()
         if next_line:
             next_line = next_line.strip()
+        if len(next_line) == 0:
+            next_line = None
         return next_line
 
     def execute_command(this):
         if not this.has_command():
-            return
-        if this.current_command[0] != '$':
-            print(f'Expected command instead of {this.current_command}.')
-            this.current_command = None
+            print(f'Executing: No command')
             return
 
-        print(f'Executing: {this.current_command}')
-        next_line = this.read_next_line()
-        if not next_line or len(next_line) == 0:
-            this.current_command = next_line
+        command = re.match(this.cd_command_template, this.current_command)
+        if command:
+            print(f'Executing: cd {command.group(1)}')
+            this.current_command = this.read_next_line()
             return
-        while (next_line[0] != '$'):
-            print(f'   Output: {next_line}')
-            next_line = this.read_next_line()
-            if not next_line or len(next_line) == 0:
-                this.current_command = next_line
-                return
-        this.current_command = next_line    
+
+        command = re.match(this.ls_command_template, this.current_command)
+        if command:
+            print(f'Executing: ls')
+            output_line = this.read_next_line()
+            while (output_line and output_line[0] != '$'):
+                print(f'   Output: {output_line}')
+                output_line = this.read_next_line()
+            this.current_command = output_line
+            return
+
+        print(f'Unrecognized command: {this.current_command}')
+        this.current_command = this.read_next_line()
+        return
 
 
 def main(arguments):
