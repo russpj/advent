@@ -92,7 +92,8 @@ class Shell():
                     continue
 
                 print(f'Unrecognized output: {output_line}')
-                
+                output_line = this.read_next_line()
+
             this.current_command = output_line
             return
 
