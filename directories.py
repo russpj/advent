@@ -47,8 +47,8 @@ class Shell():
         this.workind_directory = this.root_directory
         this.input_file = input_file
         this.current_command = this.read_next_line()
-        this.ls_command_template = re.compile(r'\$ +ls')
-        this.cd_command_template = re.compile(r'\$ +cd +(.*)$')
+        this.ls_command_template = re.compile(r'\$\s+ls')
+        this.cd_command_template = re.compile(r'\$\s+cd\s+(.*)$')
 
     def has_command(this):
         return this.current_command != None and len(this.current_command) > 0
