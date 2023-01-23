@@ -49,6 +49,8 @@ class Shell():
         this.current_command = this.read_next_line()
         this.ls_command_template = re.compile(r'\$\s+ls')
         this.cd_command_template = re.compile(r'\$\s+cd\s+(.*)$')
+        this.directory_listing = re.compile(r'dir\s+(\S+)')
+        this.file_listing = re.compile(r'(\d+)\s+(\S+)')
 
     def has_command(this):
         return this.current_command != None and len(this.current_command) > 0
@@ -77,8 +79,20 @@ class Shell():
             print(f'Executing: ls')
             output_line = this.read_next_line()
             while (output_line and output_line[0] != '$'):
-                print(f'   Output: {output_line}')
-                output_line = this.read_next_line()
+                output = re.match(this.file_listing, output_line)
+                if output:
+                    print(f'     File: {output.group(1)} {output.group(2)}')
+                    output_line = this.read_next_line()
+                    continue
+                
+                output = re.match(this.directory_listing, output_line)
+                if output:
+                    print(f'Directory: dir {output.group(1)}')
+                    output_line = this.read_next_line()
+                    continue
+
+                print(f'Unrecognized output: {output_line}')
+                
             this.current_command = output_line
             return
 
