@@ -32,11 +32,11 @@ class Directory():
     def add_file(this, name, size):
         file = File(name, size)
         this.files.append(file)
-        this.update_accumulate_size(size)
+        this.update_accumulated_size(size)
         return
 
     def update_accumulated_size(this, size):
-        this.accumulate_size += size
+        this.accumulated_size += size
         if this.parent:
             this.parent.update_accumulated_size(size)
 
@@ -44,7 +44,7 @@ class Directory():
 class Shell():
     def __init__(this, input_file):
         this.root_directory = Directory(None, '/')
-        this.workind_directory = this.root_directory
+        this.working_directory = this.root_directory
         this.input_file = input_file
         this.current_command = this.read_next_line()
         this.ls_command_template = re.compile(r'\$\s+ls')
@@ -70,7 +70,20 @@ class Shell():
 
         command = re.match(this.cd_command_template, this.current_command)
         if command:
-            print(f'Executing: cd {command.group(1)}')
+            target_directory = command.group(1)
+            print(f'Executing: cd {target_directory}')
+            if target_directory == '/':
+                this.working_directory = this.root_directory
+            elif target_directory == '..':
+                this.working_directory = this.working_directory.parent
+            else:
+                directory_found = False
+                for directory in this.working_directory.child_directories:
+                    if directory.name == target_directory:
+                        this.working_directory = directory
+                        directory_found = True
+                if not directory_found:
+                    print(f'Error: Could not find {target_directory} in {this.working_directory}')
             this.current_command = this.read_next_line()
             return
 
@@ -81,13 +94,18 @@ class Shell():
             while (output_line and output_line[0] != '$'):
                 output = re.match(this.file_listing, output_line)
                 if output:
-                    print(f'     File: {output.group(1)} {output.group(2)}')
+                    file_name = output.group(2)
+                    file_size = int(output.group(1))
+                    print(f'     File: {file_name} {file_size}')
+                    this.working_directory.add_file(file_name, file_size)
                     output_line = this.read_next_line()
                     continue
                 
                 output = re.match(this.directory_listing, output_line)
                 if output:
-                    print(f'Directory: dir {output.group(1)}')
+                    directory_name = output.group(1)
+                    print(f'Directory: dir {directory_name}')
+                    this.working_directory.add_directory(directory_name)
                     output_line = this.read_next_line()
                     continue
 
