@@ -56,20 +56,24 @@ class Shell():
 
     def execute_command(this):
         if not this.has_command():
-            return 
-        if this.current_command[0] == '$':
-            print(f'Executing: {this.current_command}')
+            return
+        if this.current_command[0] != '$':
+            print(f'Expected command instead of {this.current_command}.')
+            this.current_command = None
+            return
+
+        print(f'Executing: {this.current_command}')
+        next_line = this.read_next_line()
+        if not next_line or len(next_line) == 0:
+            this.current_command = next_line
+            return
+        while (next_line[0] != '$'):
+            print(f'   Output: {next_line}')
             next_line = this.read_next_line()
             if not next_line or len(next_line) == 0:
                 this.current_command = next_line
                 return
-            while (next_line[0] != '$'):
-                print(f'   Output: {next_line}')
-                next_line = this.read_next_line()
-                if not next_line or len(next_line) == 0:
-                    this.current_command = next_line
-                    return
-            this.current_command = next_line    
+        this.current_command = next_line    
 
 
 def main(arguments):
