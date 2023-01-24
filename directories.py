@@ -154,13 +154,18 @@ def main(arguments):
             shell = Shell(input_file)
             while shell.has_command():
                 shell.execute_command()
-            total_small_directory_size = 0
-            small_directory_limit = 100000
+            file_system_capacity = 70000000
+            update_required_free_space = 30000000
+            space_available = file_system_capacity - shell.root_directory.accumulated_size
+            new_space_required = update_required_free_space - space_available
+            candidate_directory = None
             for directory in shell.root_directory.dictionary_list():
                 print(f'finding directory {directory.name} with {directory.accumulated_size} in size')
-                if directory.accumulated_size < small_directory_limit:
-                    total_small_directory_size += directory.accumulated_size
-            print(f'The total size of the small directories is {total_small_directory_size}')
+                if directory.accumulated_size > new_space_required:
+                    if not candidate_directory or directory.accumulated_size < candidate_directory.accumulated_size:
+                        candidate_directory = directory
+            print(f'{candidate_directory.accumulated_size} will be freed by deleting {candidate_directory.name}')
+            print(f'There will be {space_available+candidate_directory.accumulated_size} bytes free on the filesystem.')
 
     return
 
