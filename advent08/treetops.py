@@ -10,6 +10,44 @@ from getopt import getopt, GetoptError
 app_name = 'treetops.py'
 
 
+def read_grid(input_file):
+    grid = []
+    for line in input_file:
+        numbers = line.strip()
+        row = []
+        for index in range(len(numbers)):
+            row.append(int(numbers[index]))
+        grid.append(row)
+    return grid
+
+
+def find_visible_trees(grid):
+    visible_trees = set()
+    for row in range(len(grid)):
+        highest_tree = -1
+        for col in range(len(grid[row])):
+            if grid[row][col] > highest_tree:
+                visible_trees.add((row, col))
+                highest_tree = grid[row][col]
+        highest_tree = -1
+        for col in range(len(grid[row])-1, -1, -1):
+            if grid[row][col] > highest_tree:
+                visible_trees.add((row, col))
+                highest_tree = grid[row][col]
+    for col in range(len(grid[0])):
+        highest_tree = -1
+        for row in range(len(grid)):
+            if grid[row][col] > highest_tree:
+                visible_trees.add((row, col))
+                highest_tree = grid[row][col]
+        highest_tree = -1
+        for row in range(len(grid)-1, -1, -1):
+            if grid[row][col] > highest_tree:
+                visible_trees.add((row, col))
+                highest_tree = grid[row][col]
+    return visible_trees
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -33,6 +71,10 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            tree_grid = read_grid(input_file)
+            visible_trees = find_visible_trees(tree_grid)
+            print(f'The forest grid has {len(visible_trees)} visible trees')
+
 
     return
 
