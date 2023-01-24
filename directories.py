@@ -154,8 +154,13 @@ def main(arguments):
             shell = Shell(input_file)
             while shell.has_command():
                 shell.execute_command()
+            total_small_directory_size = 0
+            small_directory_limit = 100000
             for directory in shell.root_directory.dictionary_list():
                 print(f'finding directory {directory.name} with {directory.accumulated_size} in size')
+                if directory.accumulated_size < small_directory_limit:
+                    total_small_directory_size += directory.accumulated_size
+            print(f'The total size of the small directories is {total_small_directory_size}')
 
     return
 
