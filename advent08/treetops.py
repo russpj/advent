@@ -48,8 +48,48 @@ def find_visible_trees(grid):
     return visible_trees
 
 
+def next_tree(grid, row, col, direction):
+    if direction == 'left':
+        if col == 0:
+            return None
+        else:
+            return (row, col-1)
+    if direction == 'right':
+        if col == len(grid[row]) - 1:
+            return None
+        else:
+            return (row, col + 1)
+    if direction == 'up':
+        if row == 0:
+            return None
+        else:
+            return (row-1, col)
+    if direction == 'down':
+        if row == len(grid) - 1:
+            return None
+        else:
+            return (row+1, col)
+
+
+def view_score(grid, row, col, direction):
+    this_tree_height = grid[row][col]
+    view_length = 0
+    look_ahead = next_tree(grid, row, col, direction)
+    while look_ahead:
+        view_length += 1
+        row = look_ahead[0]
+        col = look_ahead[1]
+        if grid[row][col] >= this_tree_height:
+            break
+        look_ahead = next_tree(grid, row, col, direction)
+    return view_length
+
+
 def calculate_view_score(grid, row, col):
-    return 0
+    return (view_score(grid, row, col, 'left') * 
+            view_score(grid, row, col, 'right') * 
+            view_score(grid, row, col, 'up') * 
+            view_score(grid, row, col, 'down'))
 
 
 def calculate_view_scores(grid):
