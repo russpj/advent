@@ -48,6 +48,11 @@ def find_visible_trees(grid):
     return visible_trees
 
 
+def calculate_view_scores(grid):
+    view_scores = []
+    return view_scores
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --file [input file]'
@@ -74,6 +79,13 @@ def main(arguments):
             tree_grid = read_grid(input_file)
             visible_trees = find_visible_trees(tree_grid)
             print(f'The forest grid has {len(visible_trees)} visible trees')
+
+            view_scores = calculate_view_scores(tree_grid)
+            max_view_score = 0
+            for row in view_scores:
+                row_max = max(row)
+                max_view_score = max((max_view_score, row_max))
+            print(f'The best view has a score of {max_view_score}')
 
 
     return
