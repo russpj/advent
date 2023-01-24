@@ -17,6 +17,7 @@ class File():
         this.size = size
         return
 
+
 class Directory():
     def __init__(this, parent, name):
         this.parent = parent
@@ -39,6 +40,12 @@ class Directory():
         this.accumulated_size += size
         if this.parent:
             this.parent.update_accumulated_size(size)
+
+    def dictionary_list(this):
+        yield this
+        for child in this.child_directories:
+            yield from child.dictionary_list()
+
 
 
 class Shell():
@@ -75,7 +82,8 @@ class Shell():
             if target_directory == '/':
                 this.working_directory = this.root_directory
             elif target_directory == '..':
-                this.working_directory = this.working_directory.parent
+                if this.working_directory.parent:
+                    this.working_directory = this.working_directory.parent
             else:
                 directory_found = False
                 for directory in this.working_directory.child_directories:
@@ -146,6 +154,8 @@ def main(arguments):
             shell = Shell(input_file)
             while shell.has_command():
                 shell.execute_command()
+            for directory in shell.root_directory.dictionary_list():
+                print(f'finding directory {directory.name} with {directory.accumulated_size} in size')
 
     return
 
