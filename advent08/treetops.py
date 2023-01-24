@@ -48,8 +48,17 @@ def find_visible_trees(grid):
     return visible_trees
 
 
+def calculate_view_score(grid, row, col):
+    return 0
+
+
 def calculate_view_scores(grid):
     view_scores = []
+    for row in range(len(grid)):
+        row_scores = []
+        for col in range(len(grid[row])):
+            row_scores.append(calculate_view_score(grid, row, col))
+        view_scores.append(row_scores)
     return view_scores
 
 
