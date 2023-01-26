@@ -3,6 +3,7 @@
 # advent
 '''Advent of code template'''
 
+
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 
@@ -16,8 +17,7 @@ def main(arguments):
     input_file_name = ''
 
     try:
-        opts, args = getopt(arguments, "hf:", 
-            ("help", "file="))
+        opts, args = getopt(arguments, "hf:", ("help", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
