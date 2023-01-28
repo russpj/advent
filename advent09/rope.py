@@ -22,16 +22,32 @@ class Rope():
     def move_head(this, direction, steps):
         if direction == 'R':
             print(f'Right {steps}')
-            this.head_pos = (this.head_pos[0], this.head_pos[1]+steps)
         if direction == 'U':
             print(f'Up {steps}')
-            this.head_pos = (this.head_pos[0]+steps, this.head_pos[1])
         if direction == 'L':
             print(f'Left {steps}')
-            this.head_pos = (this.head_pos[0], this.head_pos[1]-steps)
         if direction == 'D':
             print(f'Right {steps}')
-            this.head_pos = (this.head_pos[0]-steps, this.head_pos[1])
+        for step in range(steps):
+            this.move_head_one_step(direction)
+
+    def move_head_one_step(this, direction):
+        steps = 1
+        if direction == 'R':
+            print(f'Right')
+            this.head_pos = (this.head_pos[0], this.head_pos[1]+1)
+        if direction == 'U':
+            print(f'Up')
+            this.head_pos = (this.head_pos[0]+1, this.head_pos[1])
+        if direction == 'L':
+            print(f'Left')
+            this.head_pos = (this.head_pos[0], this.head_pos[1]-1)
+        if direction == 'D':
+            print(f'Right')
+            this.head_pos = (this.head_pos[0]-1, this.head_pos[1])
+
+    def move_tail(this):
+        pass
 
 
 def main(arguments):
@@ -62,6 +78,7 @@ def main(arguments):
                 direction, steps = command.strip().split()
                 rope.move_head(direction, int(steps))
                 rope.print()
+                rope.move_tail()
 
 
 
