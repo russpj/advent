@@ -12,17 +12,19 @@ app_name = 'rope.py'
 
 
 class Rope():
-    def __init__(this):
+    def __init__(this, num_knots):
         this.knots = []
-        this.knots.append((0,0))
-        this.knots.append((0,0))
+        for knot in range(num_knots):
+            this.knots.append((0,0))
         this.tail_positions = set()
 
     def print(this):
         head = this.knots[0]
-        tail = this.knots[1]
-        this.tail_positions.add(tail)
-        print(f'The head is at {head}, and the tail at {tail}')
+        print(f'The head is at {head}')
+        for tail_index in range(1, len(this.knots)):
+            tail = this.knots[tail_index]
+            print(f'tail {tail_index} is at {tail}')
+        this.tail_positions.add(this.knots[-1])
         print(f'The tail has been in {len(this.tail_positions)} positions.')
 
     def move_head(this, direction, steps):
@@ -106,7 +108,7 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
-            rope = Rope()
+            rope = Rope(2)
             rope.print()
             for command in input_file:
                 direction, steps = command.strip().split()
