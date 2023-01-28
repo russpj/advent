@@ -21,6 +21,7 @@ class Rope():
         this.tail_positions.add(this.tail_pos)
         print(f'The head is at {this.head_pos}, and the tail at {this.tail_pos}')
         print(f'The tail has been in {len(this.tail_positions)} positions.')
+
     def move_head(this, direction, steps):
         if direction == 'R':
             print(f'Right {steps}')
@@ -32,6 +33,8 @@ class Rope():
             print(f'Right {steps}')
         for step in range(steps):
             this.move_head_one_step(direction)
+            this.move_tail()
+            this.print()
 
     def move_head_one_step(this, direction):
         if direction == 'R':
@@ -46,8 +49,6 @@ class Rope():
         if direction == 'D':
             print(f'Right')
             this.head_pos = (this.head_pos[0]-1, this.head_pos[1])
-        this.move_tail()
-        this.print()
 
     def move_tail(this):
         head_row, head_col = this.head_pos
