@@ -15,10 +15,12 @@ class Rope():
     def __init__(this):
         this.head_pos = (0,0)
         this.tail_pos = (0,0)
+        this.tail_positions = set()
 
     def print(this):
+        this.tail_positions.add(this.tail_pos)
         print(f'The head is at {this.head_pos}, and the tail at {this.tail_pos}')
-
+        print(f'The tail has been in {len(this.tail_positions)} positions.')
     def move_head(this, direction, steps):
         if direction == 'R':
             print(f'Right {steps}')
