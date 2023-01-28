@@ -108,7 +108,7 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
-            rope = Rope(2)
+            rope = Rope(10)
             rope.print()
             for command in input_file:
                 direction, steps = command.strip().split()
