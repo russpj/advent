@@ -32,7 +32,6 @@ class Rope():
             this.move_head_one_step(direction)
 
     def move_head_one_step(this, direction):
-        steps = 1
         if direction == 'R':
             print(f'Right')
             this.head_pos = (this.head_pos[0], this.head_pos[1]+1)
@@ -45,9 +44,34 @@ class Rope():
         if direction == 'D':
             print(f'Right')
             this.head_pos = (this.head_pos[0]-1, this.head_pos[1])
+        this.move_tail()
+        this.print()
 
     def move_tail(this):
-        pass
+        head_row, head_col = this.head_pos
+        tail_row, tail_col = this.tail_pos
+        if abs(head_row-tail_row) <= 1 and abs(head_col-tail_col) <= 1:
+            return
+        if head_row == tail_row:
+            if head_col < tail_col:
+                this.tail_pos = (tail_row, tail_col-1)
+            else:
+                this.tail_pos = (tail_row, tail_col+1)
+        elif head_col == tail_col:
+            if head_row < tail_row:
+                this.tail_pos = (tail_row-1, tail_col)
+            else:
+                this.tail_pos = (tail_row+1, tail_col)
+        elif head_row < tail_row:
+            if head_col < tail_col:
+                this.tail_pos = (tail_row-1, tail_col-1)
+            else:
+                this.tail_pos = (tail_row-1, tail_col+1)
+        elif head_row > tail_row:
+            if head_col < tail_col:
+                this.tail_pos = (tail_row+1, tail_col-1)
+            else:
+                this.tail_pos = (tail_row+1, tail_col+1)
 
 
 def main(arguments):
@@ -77,10 +101,6 @@ def main(arguments):
             for command in input_file:
                 direction, steps = command.strip().split()
                 rope.move_head(direction, int(steps))
-                rope.print()
-                rope.move_tail()
-
-
 
     return
 
