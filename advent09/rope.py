@@ -56,32 +56,32 @@ class Rope():
         this.knots[0] = head
 
     def move_tails(this):
-        head_index = 0
-        tail_index = 1
-        head_row, head_col = this.knots[head_index]
-        tail_row, tail_col = this.knots[tail_index]
-        if abs(head_row-tail_row) <= 1 and abs(head_col-tail_col) <= 1:
-            return
-        if head_row == tail_row:
-            if head_col < tail_col:
-                this.knots[tail_index] = (tail_row, tail_col-1)
-            else:
-                this.knots[tail_index] = (tail_row, tail_col+1)
-        elif head_col == tail_col:
-            if head_row < tail_row:
-                this.knots[tail_index] = (tail_row-1, tail_col)
-            else:
-                this.knots[tail_index] = (tail_row+1, tail_col)
-        elif head_row < tail_row:
-            if head_col < tail_col:
-                this.knots[tail_index] = (tail_row-1, tail_col-1)
-            else:
-                this.knots[tail_index] = (tail_row-1, tail_col+1)
-        elif head_row > tail_row:
-            if head_col < tail_col:
-                this.knots[tail_index] = (tail_row+1, tail_col-1)
-            else:
-                this.knots[tail_index] = (tail_row+1, tail_col+1)
+        for tail_index in range(1, len(this.knots)):
+            head_index = tail_index-1
+            head_row, head_col = this.knots[head_index]
+            tail_row, tail_col = this.knots[tail_index]
+            if abs(head_row-tail_row) <= 1 and abs(head_col-tail_col) <= 1:
+                return
+            if head_row == tail_row:
+                if head_col < tail_col:
+                    this.knots[tail_index] = (tail_row, tail_col-1)
+                else:
+                    this.knots[tail_index] = (tail_row, tail_col+1)
+            elif head_col == tail_col:
+                if head_row < tail_row:
+                    this.knots[tail_index] = (tail_row-1, tail_col)
+                else:
+                    this.knots[tail_index] = (tail_row+1, tail_col)
+            elif head_row < tail_row:
+                if head_col < tail_col:
+                    this.knots[tail_index] = (tail_row-1, tail_col-1)
+                else:
+                    this.knots[tail_index] = (tail_row-1, tail_col+1)
+            elif head_row > tail_row:
+                if head_col < tail_col:
+                    this.knots[tail_index] = (tail_row+1, tail_col-1)
+                else:
+                    this.knots[tail_index] = (tail_row+1, tail_col+1)
 
 
 def main(arguments):
