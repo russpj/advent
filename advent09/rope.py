@@ -13,13 +13,16 @@ app_name = 'rope.py'
 
 class Rope():
     def __init__(this):
-        this.head_pos = (0,0)
-        this.tail_pos = (0,0)
+        this.knots = []
+        this.knots.append((0,0))
+        this.knots.append((0,0))
         this.tail_positions = set()
 
     def print(this):
-        this.tail_positions.add(this.tail_pos)
-        print(f'The head is at {this.head_pos}, and the tail at {this.tail_pos}')
+        head = this.knots[0]
+        tail = this.knots[1]
+        this.tail_positions.add(tail)
+        print(f'The head is at {head}, and the tail at {tail}')
         print(f'The tail has been in {len(this.tail_positions)} positions.')
 
     def move_head(this, direction, steps):
@@ -33,48 +36,52 @@ class Rope():
             print(f'Right {steps}')
         for step in range(steps):
             this.move_head_one_step(direction)
-            this.move_tail()
+            this.move_tails()
             this.print()
 
     def move_head_one_step(this, direction):
+        head = this.knots[0]
         if direction == 'R':
             print(f'Right')
-            this.head_pos = (this.head_pos[0], this.head_pos[1]+1)
+            head = (head[0], head[1]+1)
         if direction == 'U':
             print(f'Up')
-            this.head_pos = (this.head_pos[0]+1, this.head_pos[1])
+            head = (head[0]+1, head[1])
         if direction == 'L':
             print(f'Left')
-            this.head_pos = (this.head_pos[0], this.head_pos[1]-1)
+            head = (head[0], head[1]-1)
         if direction == 'D':
             print(f'Right')
-            this.head_pos = (this.head_pos[0]-1, this.head_pos[1])
+            head = (head[0]-1, head[1])
+        this.knots[0] = head
 
-    def move_tail(this):
-        head_row, head_col = this.head_pos
-        tail_row, tail_col = this.tail_pos
+    def move_tails(this):
+        head_index = 0
+        tail_index = 1
+        head_row, head_col = this.knots[head_index]
+        tail_row, tail_col = this.knots[tail_index]
         if abs(head_row-tail_row) <= 1 and abs(head_col-tail_col) <= 1:
             return
         if head_row == tail_row:
             if head_col < tail_col:
-                this.tail_pos = (tail_row, tail_col-1)
+                this.knots[tail_index] = (tail_row, tail_col-1)
             else:
-                this.tail_pos = (tail_row, tail_col+1)
+                this.knots[tail_index] = (tail_row, tail_col+1)
         elif head_col == tail_col:
             if head_row < tail_row:
-                this.tail_pos = (tail_row-1, tail_col)
+                this.knots[tail_index] = (tail_row-1, tail_col)
             else:
-                this.tail_pos = (tail_row+1, tail_col)
+                this.knots[tail_index] = (tail_row+1, tail_col)
         elif head_row < tail_row:
             if head_col < tail_col:
-                this.tail_pos = (tail_row-1, tail_col-1)
+                this.knots[tail_index] = (tail_row-1, tail_col-1)
             else:
-                this.tail_pos = (tail_row-1, tail_col+1)
+                this.knots[tail_index] = (tail_row-1, tail_col+1)
         elif head_row > tail_row:
             if head_col < tail_col:
-                this.tail_pos = (tail_row+1, tail_col-1)
+                this.knots[tail_index] = (tail_row+1, tail_col-1)
             else:
-                this.tail_pos = (tail_row+1, tail_col+1)
+                this.knots[tail_index] = (tail_row+1, tail_col+1)
 
 
 def main(arguments):
