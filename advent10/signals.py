@@ -17,7 +17,7 @@ def main(arguments):
     input_file_name = ''
 
     try:
-        opts, args = getopt(arguments, "hf:", ("help", "file="))
+        opts, args = getopt(arguments, "hf:", ["help", "file="])
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
