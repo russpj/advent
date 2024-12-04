@@ -29,6 +29,15 @@ def is_within(values, min_value, max_value): # [min_value, max_value)
     return True
 
 
+def is_almost_within(values, min_value, max_value, tolerance): # [min_value, max_value)
+    for value in values:
+        if value < min_value:
+            return False
+        if value >= max_value:
+            return False
+    return True
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
@@ -50,7 +59,8 @@ def main(arguments):
             input_file_name = arg
 
         if opt in ('-s', '--section'):
-            sections.append(arg)
+            for section in arg:
+                sections.append(section)
 
     reports = []
     if input_file_name:
@@ -70,6 +80,15 @@ def main(arguments):
                 if safe:
                     count_safe += 1
             print(f'There were {count_safe} safe reports')
+        
+        if section == 'b':
+            count_safe = 0
+            for report in reports:
+                level_diffs = adjacent_difference(report)
+                safe = is_almost_within(level_diffs, 1, 4, 1) or is_almost_within(level_diffs, -3, 0, 1)
+                if safe:
+                    count_safe += 1
+            print(f'There were {count_safe} almost safe reports')
 
     return
 
