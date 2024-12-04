@@ -10,6 +10,24 @@ from getopt import getopt, GetoptError
 
 app_name = 'safety.py'
 
+def adjacent_difference(sequence):
+    first = sequence[0::]
+    second = sequence[1::]
+    pairs = zip(first, second)
+    diffs = []
+    for pair in pairs:
+        diffs.append(pair[1] - pair[0])
+    return diffs
+
+
+def is_within(values, min_value, max_value): # [min_value, max_value)
+    for value in values:
+        if value < min_value:
+            return False
+        if value >= max_value:
+            return False
+    return True
+
 
 def main(arguments):
     program_name = app_name
@@ -43,6 +61,10 @@ def main(arguments):
 
     for section in sections:
         print(f'Processing {len(reports)} reports in section {section}')
+        if section == 'a':
+            for report in reports:
+                level_diffs = adjacent_difference(report)
+                safe = is_within(level_diffs, 1, 4) || is_within(level_diffs, -3, 0)
 
     return
 
