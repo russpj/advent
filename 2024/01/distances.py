@@ -55,6 +55,13 @@ def main(arguments):
                 sum += difference
             print(f'The total distances of the {len(left_list)} pairs is {sum}')
 
+        if section == 'b':
+            total_similarity = 0
+            for element in left_list:
+                similarity = element * right_list.count(element)
+                total_similarity += similarity
+            print(f'The total similarity of the two lists is {total_similarity}')
+
     return
 
 
