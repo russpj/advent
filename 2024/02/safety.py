@@ -57,14 +57,19 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
             for line in input_file:
-                reports.append(line.split())
+                report = [int(x) for x in line.split()]
+                reports.append(report)
 
     for section in sections:
         print(f'Processing {len(reports)} reports in section {section}')
         if section == 'a':
+            count_safe = 0
             for report in reports:
                 level_diffs = adjacent_difference(report)
-                safe = is_within(level_diffs, 1, 4) || is_within(level_diffs, -3, 0)
+                safe = is_within(level_diffs, 1, 4) or is_within(level_diffs, -3, 0)
+                if safe:
+                    count_safe += 1
+            print(f'There were {count_safe} safe reports')
 
     return
 
