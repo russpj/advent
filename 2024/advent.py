@@ -13,11 +13,12 @@ app_name = 'advent.py'
 
 def main(arguments):
     program_name = app_name
-    command_line_documentation = f'{program_name} --help --file [input file]'
+    command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
     input_file_name = ''
+    sections = []
 
     try:
-        opts, args = getopt(arguments, "hf:", ("help", "file="))
+        opts, args = getopt(arguments, "hs:f:", ("help", "section=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
@@ -30,9 +31,15 @@ def main(arguments):
         if opt in ('-f', '--file'):
             input_file_name = arg
 
+        if opt in ('-s', '--section'):
+            sections.append(arg)
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+
+    for section in sections:
+        print(f'Processing section {section}')
 
     return
 
