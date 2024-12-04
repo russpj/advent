@@ -30,11 +30,16 @@ def is_within(values, min_value, max_value): # [min_value, max_value)
 
 
 def is_almost_within(values, min_value, max_value, tolerance): # [min_value, max_value)
+    count_unsafe_levels = 0
     for value in values:
         if value < min_value:
-            return False
+            count_unsafe_levels += 1
+            if count_unsafe_levels > tolerance:
+                return False
         if value >= max_value:
-            return False
+            count_unsafe_levels += 1
+            if count_unsafe_levels > tolerance:
+                return False
     return True
 
 
