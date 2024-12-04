@@ -37,18 +37,18 @@ def main(arguments):
             section = 'b'
 
     if input_file_name:
-        if section == 'a':
-            left_list = []
-            right_list = []
-            with open(input_file_name, 'r') as input_file:
-                print(f'Opened {input_file_name} for {app_name} section {section}')
-                for line in input_file:
-                    left, right = [int(x) for x in line.split()]
-                    left_list.append(left)
-                    right_list.append(right)
-            left_list = sorted(left_list)
-            right_list = sorted(right_list)
+        left_list = []
+        right_list = []
+        with open(input_file_name, 'r') as input_file:
+            print(f'Opened {input_file_name} for {app_name} section {section}')
+            for line in input_file:
+                left, right = [int(x) for x in line.split()]
+                left_list.append(left)
+                right_list.append(right)
+        left_list = sorted(left_list)
+        right_list = sorted(right_list)
 
+        if section == 'a':
             sum = 0
             for pair in zip(left_list, right_list):
                 difference = abs(pair[0]-pair[1])
