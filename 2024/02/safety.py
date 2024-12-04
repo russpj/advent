@@ -20,7 +20,7 @@ def adjacent_difference(sequence):
     return diffs
 
 
-def is_within(values, min_value, max_value): # [min_value, max_value)
+def are_within(values, min_value, max_value): # [min_value, max_value)
     for value in values:
         if value < min_value:
             return False
@@ -28,19 +28,17 @@ def is_within(values, min_value, max_value): # [min_value, max_value)
             return False
     return True
 
+def are_diffs_within(sequence, min_value, max_value):
+    diffs = adjacent_difference(sequence)
+    return are_within(diffs, min_value, max_value)
 
-def is_almost_within(values, min_value, max_value, tolerance): # [min_value, max_value)
-    count_unsafe_levels = 0
-    for value in values:
-        if value < min_value:
-            count_unsafe_levels += 1
-            if count_unsafe_levels > tolerance:
-                return False
-        if value >= max_value:
-            count_unsafe_levels += 1
-            if count_unsafe_levels > tolerance:
-                return False
-    return True
+
+def are_some_within(values_in, min_diff, max_diff):
+    for remove_this in range(len(values_in)):
+        values = [values_in[i] for i in range(len(values_in)) if i != remove_this]
+        if are_diffs_within(values, min_diff, max_diff):
+            return True
+    return False    
 
 
 def main(arguments):
@@ -80,20 +78,20 @@ def main(arguments):
         if section == 'a':
             count_safe = 0
             for report in reports:
-                level_diffs = adjacent_difference(report)
-                safe = is_within(level_diffs, 1, 4) or is_within(level_diffs, -3, 0)
+                safe = are_diffs_within(report, 1, 4) or are_diffs_within(report, -3, 0)
                 if safe:
                     count_safe += 1
             print(f'There were {count_safe} safe reports')
         
         if section == 'b':
-            count_safe = 0
+            count_almost_safe = 0
             for report in reports:
-                level_diffs = adjacent_difference(report)
-                safe = is_almost_within(level_diffs, 1, 4, 1) or is_almost_within(level_diffs, -3, 0, 1)
-                if safe:
-                    count_safe += 1
-            print(f'There were {count_safe} almost safe reports')
+                
+                if make_safe(report, 1, 4) <= 1:
+                    count_almost_safe += 1
+                elif make_safe(report, -3, 0) <= 1:
+                    count_almost_safe += 1
+            print(f'There were {count_almost_safe} almost safe reports')
 
     return
 
