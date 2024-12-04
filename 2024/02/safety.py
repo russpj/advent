@@ -86,10 +86,9 @@ def main(arguments):
         if section == 'b':
             count_almost_safe = 0
             for report in reports:
-                
-                if make_safe(report, 1, 4) <= 1:
+                if are_diffs_within(report, 1, 4) or are_diffs_within(report, -3, 0):
                     count_almost_safe += 1
-                elif make_safe(report, -3, 0) <= 1:
+                elif are_some_within(report, 1, 4) or are_some_within(report, -3, 0):
                     count_almost_safe += 1
             print(f'There were {count_almost_safe} almost safe reports')
 
