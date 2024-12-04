@@ -32,7 +32,8 @@ def main(arguments):
             input_file_name = arg
 
         if opt in ('-s', '--section'):
-            sections.append(arg)
+            for section in arg:
+                sections.append(section)
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
