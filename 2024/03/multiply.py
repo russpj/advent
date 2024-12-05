@@ -15,7 +15,24 @@ def evaluate(function):
         arguments = function[4:-1]
         left, right = arguments.split(',')
         return int(left)*int(right)
-    
+
+
+class Processor:
+    def __init__(this):
+        this.enabled = True
+        this.accumulator = 0
+
+    def execute(this, function):
+        if function[0:3] == 'mul':
+            arguments = function[4:-1]
+            left, right = arguments.split(',')
+            if this.enabled:
+                this.accumulator += int(left)*int(right)
+        if function[0:2] == 'do':
+            this.enabled = True
+        if function[0:5] == "don't":
+            this.enabled = False
+
 
 def main(arguments):
     program_name = app_name
@@ -58,6 +75,18 @@ def main(arguments):
                 for function in matches:
                     sum += evaluate(function)
             print(f'The sum of all of the multiplications in {len(commands)} commands is {sum}')
+
+        if section == 'b':
+            proc = Processor()
+            mul_test = r'mul\(\d{1,3},\d{1,3}\)'
+            do_test = r'do\(\)'
+            dont_test = r"don\'t\(\)"
+            test = f'{mul_test}|{do_test}|{dont_test}'
+            for command in commands:
+                matches = re.findall(test, command)
+                for function in matches:
+                    proc.execute(function)
+            print(f'Enabled multiplies added up to {proc.accumulator}')
     return
 
 
