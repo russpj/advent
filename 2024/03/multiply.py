@@ -6,10 +6,16 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
-
+import re
 
 app_name = 'multiply.py'
 
+def evaluate(function):
+    if function[0:3] == 'mul':
+        arguments = function[4:-1]
+        left, right = arguments.split(',')
+        return int(left)*int(right)
+    
 
 def main(arguments):
     program_name = app_name
@@ -38,10 +44,20 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            commands = []
+            for line in input_file:
+                commands.append(line)
 
     for section in sections:
         print(f'Processing section {section}')
-
+        if section == 'a':
+            sum = 0
+            test = r'mul\(\d{1,3},\d{1,3}\)'
+            for command in commands:
+                matches = re.findall(test, command)
+                for function in matches:
+                    sum += evaluate(function)
+            print(f'The sum of all of the multiplications in {len(commands)} commands is {sum}')
     return
 
 
