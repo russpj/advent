@@ -29,7 +29,7 @@ def whack_strides(letter_grid):
     if num_rows == 0:
         return
     num_cols = len(letter_grid[0])
-    for diagonal_sum in range(num_rows+num_cols):
+    for diagonal_sum in range(num_rows+num_cols-1):
         stride = ''
         row_start = min(diagonal_sum, num_rows-1)
         for row in range(row_start, -1, -1):
