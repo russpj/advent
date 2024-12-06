@@ -6,6 +6,7 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
+import re
 
 
 app_name = 'wordsearch.py'
@@ -70,6 +71,14 @@ def word_search_strides(letter_grid):
         yield stride[::-1]
 
 
+def count_words(target, letter_grid):
+    count_matches = 0
+    for stride in word_search_strides(letter_grid):
+        matches = re.findall(target, stride)
+        count_matches += len(matches)
+    return count_matches
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
@@ -104,8 +113,8 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
-            for line in word_search_strides(letter_grid):
-                print(line)
+            target = "XMAS"
+            print(f'There were {count_words(target, letter_grid)} occurrences of {target}')
 
     return
 
