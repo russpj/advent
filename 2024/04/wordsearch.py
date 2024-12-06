@@ -10,6 +10,16 @@ from getopt import getopt, GetoptError
 
 app_name = 'wordsearch.py'
 
+def across_strides(letter_grid):
+    for stride in letter_grid:
+        yield stride
+
+
+def word_search_strides(letter_grid):
+    for stride in across_strides(letter_grid):
+        yield stride
+        yield stride[::-1]
+
 
 def main(arguments):
     program_name = app_name
@@ -38,9 +48,15 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            letter_grid = []
+            for line in input_file:
+                letter_grid.append(line.strip())
 
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            for line in word_search_strides(letter_grid):
+                print(line)
 
     return
 
