@@ -39,6 +39,21 @@ def whack_strides(letter_grid):
         yield stride
 
 
+def back_whack_strides(letter_grid):
+    num_rows = len(letter_grid)
+    if num_rows == 0:
+        return
+    num_cols = len(letter_grid[0])
+    for diagonal_difference in range(-num_rows+1, num_cols):
+        stride = ''
+        row_start = max(-diagonal_difference, 0)
+        for row in range(num_rows+num_cols):
+            col = row + diagonal_difference
+            if col >= 0 and col < num_cols and row >= 0 and row < num_rows:
+                stride += letter_grid[row][col]
+        yield stride
+
+
 
 def word_search_strides(letter_grid):
     for stride in across_strides(letter_grid):
@@ -48,6 +63,9 @@ def word_search_strides(letter_grid):
         yield stride
         yield stride[::-1]
     for stride in whack_strides(letter_grid):
+        yield stride
+        yield stride[::-1]
+    for stride in back_whack_strides(letter_grid):
         yield stride
         yield stride[::-1]
 
