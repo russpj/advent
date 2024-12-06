@@ -15,8 +15,20 @@ def across_strides(letter_grid):
         yield stride
 
 
+def down_strides(letter_grid):
+    num_rows = len(letter_grid)
+    if num_rows == 0:
+        return
+    num_cols = len(letter_grid[0])
+    for col in range(num_cols):
+        yield ''.join([letter_grid[row][col] for row in range(num_rows)])
+
+
 def word_search_strides(letter_grid):
     for stride in across_strides(letter_grid):
+        yield stride
+        yield stride[::-1]
+    for stride in down_strides(letter_grid):
         yield stride
         yield stride[::-1]
 
