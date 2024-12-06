@@ -24,11 +24,30 @@ def down_strides(letter_grid):
         yield ''.join([letter_grid[row][col] for row in range(num_rows)])
 
 
+def whack_strides(letter_grid):
+    num_rows = len(letter_grid)
+    if num_rows == 0:
+        return
+    num_cols = len(letter_grid[0])
+    for diagonal_sum in range(num_rows+num_cols):
+        stride = ''
+        row_start = min(diagonal_sum, num_rows-1)
+        for row in range(row_start, -1, -1):
+            col = diagonal_sum - row
+            if col >= 0 and col < num_cols:
+                stride += letter_grid[row][col]
+        yield stride
+
+
+
 def word_search_strides(letter_grid):
     for stride in across_strides(letter_grid):
         yield stride
         yield stride[::-1]
     for stride in down_strides(letter_grid):
+        yield stride
+        yield stride[::-1]
+    for stride in whack_strides(letter_grid):
         yield stride
         yield stride[::-1]
 
