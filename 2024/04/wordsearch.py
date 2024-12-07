@@ -79,6 +79,10 @@ def count_words(target, letter_grid):
     return count_matches
 
 
+def is_xmas(letter_grid, row, col):
+    return letter_grid[row][col] == 'A'
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
@@ -115,7 +119,18 @@ def main(arguments):
         if section == 'a':
             target = "XMAS"
             print(f'There were {count_words(target, letter_grid)} occurrences of {target}')
-
+        
+        if section == 'b':
+            count_xmas = 0
+            num_rows = len(letter_grid)
+            if num_rows != 0:
+                num_cols = len(letter_grid[0])
+                for row in range(1, num_rows-1):
+                    for col in range(1, num_cols-1):
+                        if is_xmas(letter_grid, row, col):
+                            count_xmas += 1
+            print(f'The number of X-MASs was {count_xmas}')
+            
     return
 
 
