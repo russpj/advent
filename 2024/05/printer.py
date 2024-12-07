@@ -26,8 +26,16 @@ def process_rule(line, rules):
     return False
 
 
-def is_valid_pamphlet(line, rules):
-    return False, 0
+def is_valid_pamphlet(pages, rules):
+    for index in range(len(pages)):
+        test_page = pages[index]
+        if test_page in rules:
+            invalid_pages = rules[test_page]
+            for invalid_page_index in range(index):
+                if pages[invalid_page_index] in invalid_pages:
+                    return False
+
+    return True
 
 
 def main(arguments):
@@ -73,10 +81,10 @@ def main(arguments):
             sum_middle_pages = 0
             count_valid = 0
             for pamphlet in pamphlets:
-                valid, page_list = is_valid_pamphlet(pamphlet, rules)
+                valid = is_valid_pamphlet(pamphlet, rules)
                 if valid:
                     count_valid += 1
-                    middle_page = page_list[len(page_list)//2]
+                    middle_page = pamphlet[len(pamphlet)//2]
                     sum_middle_pages += middle_page
             print(f'The sum of the middle pages of {count_valid} pamphlets was {sum_middle_pages}')
     return
