@@ -26,17 +26,6 @@ def process_rule(line, rules):
     return False
 
 
-def is_valid_pamphlet(pages, rules):
-    for index in range(len(pages)):
-        test_page = pages[index]
-        if test_page in rules:
-            invalid_pages = rules[test_page]
-            for invalid_page_index in range(index):
-                if pages[invalid_page_index] in invalid_pages:
-                    return False
-    return True
-
-
 def make_valid_pamphlet(pages, rules):
     made_changes = False
     for index in range(len(pages)):
