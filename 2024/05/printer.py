@@ -81,20 +81,21 @@ def main(arguments):
                         pamphlets.append(pages)
         print(f'Found {len(rules)} rules and {len(pamphlets)} pamphlets')
 
-    for section in sections:
-        print(f'Processing section {section}')
-        if section == 'a' or section == 'b':
-            sum_valid_middle_pages = 0
-            count_valid = 0
-            sum_invalid_middle_pages = 0
-            count_invalid = 0
-            for pamphlet in pamphlets:
-                valid = not make_valid_pamphlet(pamphlet, rules)
-                if valid:
-                    count_valid += 1
-                    middle_page = pamphlet[len(pamphlet)//2]
-                    sum_valid_middle_pages += middle_page
+    print(f'Processing sections')
+    if 'a' in sections or 'b' in sections:
+        sum_valid_middle_pages = 0
+        count_valid = 0
+        sum_invalid_middle_pages = 0
+        count_invalid = 0
+        for pamphlet in pamphlets:
+            valid = not make_valid_pamphlet(pamphlet, rules)
+            if valid:
+                count_valid += 1
+                middle_page = pamphlet[len(pamphlet)//2]
+                sum_valid_middle_pages += middle_page
+        if 'a' in sections:
             print(f'The sum of the middle pages of {count_valid} pamphlets was {sum_valid_middle_pages}')
+
     return
 
 
