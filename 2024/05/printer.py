@@ -40,7 +40,7 @@ def make_valid_pamphlet(pages, rules):
                     pages[new_index], pages[index_compare] = pages[index_compare], pages[new_index]
                     new_index -= 1
                 else:
-                    return made_changes
+                    new_index = 0
     return made_changes
 
 
@@ -89,13 +89,17 @@ def main(arguments):
         count_invalid = 0
         for pamphlet in pamphlets:
             valid = not make_valid_pamphlet(pamphlet, rules)
+            middle_page = pamphlet[len(pamphlet)//2]
             if valid:
                 count_valid += 1
-                middle_page = pamphlet[len(pamphlet)//2]
                 sum_valid_middle_pages += middle_page
+            else:
+                count_invalid += 1
+                sum_invalid_middle_pages += middle_page
         if 'a' in sections:
-            print(f'The sum of the middle pages of {count_valid} pamphlets was {sum_valid_middle_pages}')
-
+            print(f'The sum of the middle pages of {count_valid} valid pamphlets was {sum_valid_middle_pages}')
+        if 'b' in sections:
+            print(f'The sum of the middle pages of {count_invalid} invalid pamphlets was {sum_invalid_middle_pages}')
     return
 
 
