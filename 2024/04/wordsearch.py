@@ -79,8 +79,34 @@ def count_words(target, letter_grid):
     return count_matches
 
 
+def build_positions():
+    positions = []
+    for row in (-1, 1):
+        for col in (-1, 1):
+            start_position = (row, col)
+            end_position = (-row, -col)
+            positions.append((start_position, end_position))
+    return positions
+
+
+def fit_targets(letter_grid, row, col, targets, position):
+    for index in range(len(targets)):
+        letter = targets[index]
+        location = position[index]
+        if letter != letter_grid[row+location[0]][col+location[1]]:
+            return False
+    return True
+
+
 def is_xmas(letter_grid, row, col):
-    return letter_grid[row][col] == 'A'
+    count_hits = 0
+    if letter_grid[row][col] == 'A':
+        positions = build_positions()
+        targets = ('M', 'S')
+        for position in positions:
+            if fit_targets(letter_grid, row, col, targets, position):
+                count_hits += 1
+    return count_hits == 2
 
 
 def main(arguments):
