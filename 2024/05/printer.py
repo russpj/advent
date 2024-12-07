@@ -34,8 +34,25 @@ def is_valid_pamphlet(pages, rules):
             for invalid_page_index in range(index):
                 if pages[invalid_page_index] in invalid_pages:
                     return False
-
     return True
+
+
+def make_valid_pamphlet(pages, rules):
+    made_changes = False
+    for index in range(len(pages)):
+        new_index = index
+        test_page = pages[index]
+        if test_page in rules:
+            invalid_pages = rules[test_page]
+            while new_index > 0:
+                index_compare = new_index-1
+                if pages[index_compare] in invalid_pages:
+                    made_changes = True
+                    pages[new_index], pages[index_compare] = pages[index_compare], pages[new_index]
+                    new_index -= 1
+                else:
+                    return made_changes
+    return made_changes
 
 
 def main(arguments):
@@ -77,16 +94,18 @@ def main(arguments):
 
     for section in sections:
         print(f'Processing section {section}')
-        if section == 'a':
-            sum_middle_pages = 0
+        if section == 'a' or section == 'b':
+            sum_valid_middle_pages = 0
             count_valid = 0
+            sum_invalid_middle_pages = 0
+            count_invalid = 0
             for pamphlet in pamphlets:
-                valid = is_valid_pamphlet(pamphlet, rules)
+                valid = not make_valid_pamphlet(pamphlet, rules)
                 if valid:
                     count_valid += 1
                     middle_page = pamphlet[len(pamphlet)//2]
-                    sum_middle_pages += middle_page
-            print(f'The sum of the middle pages of {count_valid} pamphlets was {sum_middle_pages}')
+                    sum_valid_middle_pages += middle_page
+            print(f'The sum of the middle pages of {count_valid} pamphlets was {sum_valid_middle_pages}')
     return
 
 
