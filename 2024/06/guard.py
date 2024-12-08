@@ -18,6 +18,17 @@ class Lab:
         self.block = '#'
         self.visited = 'X'
         return
+    
+    def guard_positions(self):
+        positions = []
+        for row in range(len(self.map[0])):
+            if row > 0:
+                for col in range(len(self.map[row])):
+                    cell = self.map[row][col]
+                    if cell in self.turn:
+                        position = (row, col)
+                        positions.append(position)
+        return positions
 
 
 def main(arguments):
@@ -62,6 +73,10 @@ def main(arguments):
 
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            guard_positions = lab.guard_positions()
+            for position in guard_positions:
+                print(f"There's a guard at {position}")
 
     return
 
