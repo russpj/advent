@@ -22,13 +22,13 @@ class Lab:
 
 def main(arguments):
     program_name = app_name
-    command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
+    command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
     input_file_name = ''
     sections = []
     verbose = False
 
     try:
-        opts, args = getopt(arguments, "hvs:f:", ("help", "vervose", "section=", "file="))
+        opts, args = getopt(arguments, "hvs:f:", ("help", "verbose", "section=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
