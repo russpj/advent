@@ -10,6 +10,15 @@ from getopt import getopt, GetoptError
 
 app_name = 'guard.py'
 
+class Lab:
+    def __init__(self):
+        self.map = []
+        self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
+        self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
+        self.block = '#'
+        self.visited = 'X'
+        return
+
 
 def main(arguments):
     program_name = app_name
@@ -35,9 +44,16 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+    lab = Lab()
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            for line in input_file:
+                lab.map.append(line.strip())
+        for row in lab.map:
+            print(row)
+
 
     for section in sections:
         print(f'Processing section {section}')
