@@ -25,9 +25,10 @@ def main(arguments):
     command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
     input_file_name = ''
     sections = []
+    verbose = False
 
     try:
-        opts, args = getopt(arguments, "hs:f:", ("help", "section=", "file="))
+        opts, args = getopt(arguments, "hvs:f:", ("help", "vervose", "section=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
@@ -44,6 +45,9 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+        if opt in ('-v', '--verbose'):
+            verbose = True
+
     lab = Lab()
 
     if input_file_name:
@@ -51,8 +55,9 @@ def main(arguments):
             print(f'Opened {input_file_name} for {app_name}')
             for line in input_file:
                 lab.map.append(line.strip())
-        for row in lab.map:
-            print(row)
+        if verbose:
+            for row in lab.map:
+                print(row)
 
 
     for section in sections:
