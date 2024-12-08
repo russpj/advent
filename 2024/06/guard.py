@@ -37,11 +37,22 @@ class Lab:
             for col in range(self.num_cols):
                 print(self.map[row][col], end='')
             print()
+        print()
+
+    def print_map_near_position(self, position):
+        size = 3
+        for row in range(position[0]-size, position[0]+size+1):
+            if row >= 0 and row < self.num_rows:
+                for col in range(position[1]-size, position[1]+size+1):
+                    if col >= 0 and col < self.num_cols:
+                        print(self.map[row][col], end='')
+                print()
+        print()
     
     def guard_positions(self):
         positions = []
         for row in range(len(self.map[0])):
-            if row > 0:
+            if row >= 0:
                 for col in range(len(self.map[row])):
                     cell = self.map[row][col]
                     if cell in self.turn:
@@ -59,6 +70,8 @@ class Lab:
     
     def move_guard(self, position):
         row = position[0]
+        if row == 0:
+            pass
         col = position[1]
         guard = self.map[row][col]
         if guard in self.turn:
@@ -127,9 +140,11 @@ def main(arguments):
                     go_again = False
                 else:
                     for position in guard_positions:
-                        lab.move_guard(position)
                         if verbose:
-                            lab.print_map()
+                            lab.print_map_near_position(position)
+                        lab.move_guard(position)
+            if verbose:
+                lab.print_map()
             print(f'The guards visited {lab.count_visited_positions()} positions')
 
     return
