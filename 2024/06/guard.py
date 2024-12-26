@@ -72,8 +72,6 @@ class Lab:
     
     def move_guard(self, position):
         row = position[0]
-        if row == 0:
-            pass
         col = position[1]
         guard = self.map[row][col]
         if guard in self.turn:
@@ -131,7 +129,6 @@ def main(arguments):
         lab.set_map(map)
         if verbose:
             lab.print_map()
-
 
     go_again = True
     while go_again:
