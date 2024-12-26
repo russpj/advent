@@ -11,7 +11,7 @@ from getopt import getopt, GetoptError
 app_name = 'guard.py'
 
 class Lab:
-    def __init__(self):
+    def __init__(self, place_obstacles):
         self.map = []
         self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
         self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
@@ -19,6 +19,8 @@ class Lab:
         self.visited = 'X'
         self.num_rows = 0
         self.num_cols = 0
+        self.obstacles_placed = []
+        self.place_obstacles = place_obstacles
         return
     
     def set_map(self, map):
@@ -117,7 +119,8 @@ def main(arguments):
         if opt in ('-v', '--verbose'):
             verbose = True
 
-    lab = Lab()
+    place_obstacles = 'b' in section
+    lab = Lab(place_obstacles)
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
@@ -130,22 +133,20 @@ def main(arguments):
             lab.print_map()
 
 
-    for section in sections:
-        print(f'Processing section {section}')
-        if section == 'a':
-            go_again = True
-            while go_again:
-                guard_positions = lab.guard_positions()
-                if len(guard_positions) <= 0:
-                    go_again = False
-                else:
-                    for position in guard_positions:
-                        if verbose:
-                            lab.print_map_near_position(position)
-                        lab.move_guard(position)
-            if verbose:
-                lab.print_map()
-            print(f'The guards visited {lab.count_visited_positions()} positions')
+    go_again = True
+    while go_again:
+        guard_positions = lab.guard_positions()
+        if len(guard_positions) <= 0:
+            go_again = False
+        else:
+            for position in guard_positions:
+                if verbose:
+                    lab.print_map_near_position(position)
+                lab.move_guard(position)
+    if verbose:
+        lab.print_map()
+    if 'a' in sections:
+        print(f'The guards visited {lab.count_visited_positions()} positions')
 
     return
 
