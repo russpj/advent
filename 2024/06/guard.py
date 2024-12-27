@@ -108,21 +108,20 @@ class Lab:
         if guard in self.turn:
             self.map[row][col] = self.visited
 
-            next_step = self.step[guard]
-            next_row = row + next_step[0]
-            next_col = col + next_step[1]
-            if next_row < 0 or next_row >= self.num_cols:
+            next_position = self.next_position(position, guard)
+            next_row, next_col = next_position
+
+            if not self.is_valid_position(next_position):
                 return
-            if next_col < 0 or next_col >= self.num_cols:
-                return
+
             if self.map[next_row][next_col] == self.block:
                 self.map[row][col] = self.turn[guard]
                 if self.place_obstacles:
                     self.look_behind_for_obstacle_candidates(position, guard)
             else:
                 if self.place_obstacles:
-                    if (next_step, guard) in self.possible_obstacle_locations:
-                        self.obstacles_placed.append(next_step)
+                    if (next_position, guard) in self.possible_obstacle_locations:
+                        self.obstacles_placed.append(next_position)
                 self.map[next_row][next_col] = guard
 
 
