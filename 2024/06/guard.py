@@ -53,16 +53,15 @@ class Lab:
                 print()
         print()
     
-    def guard_positions(self):
-        positions = []
+    def guard_position(self):
         for row in range(len(self.map[0])):
             if row >= 0:
                 for col in range(len(self.map[row])):
                     cell = self.map[row][col]
                     if cell in self.turn:
                         position = (row, col)
-                        positions.append(position)
-        return positions
+                        return position
+        return ()
     
     def count_visited_positions(self):
         count = 0
@@ -171,18 +170,17 @@ def main(arguments):
 
     go_again = True
     while go_again:
-        guard_positions = lab.guard_positions()
-        if len(guard_positions) <= 0:
+        guard_position = lab.guard_position()
+        if not guard_position:
             go_again = False
         else:
-            for position in guard_positions:
-                if verbose:
-                    lab.print_map_near_position(position)
-                lab.move_guard(position)
+            if verbose:
+                lab.print_map_near_position(guard_position)
+            lab.move_guard(guard_position)
     if verbose:
         lab.print_map()
     if 'a' in sections:
-        print(f'The guards visited {lab.count_visited_positions()} positions')
+        print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
         print(f'We found {len(lab.obstacles_placed)} locations to create loops')
 
