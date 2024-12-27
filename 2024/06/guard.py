@@ -72,9 +72,6 @@ class Lab:
                     count += 1
         return count
     
-    def creates_loop(self):
-        return False
-    
     def look_behind_for_obstacle_candidates(self):
         pass
     
