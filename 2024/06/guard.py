@@ -14,12 +14,14 @@ class Lab:
     def __init__(self, place_obstacles):
         self.map = []
         self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
+        self.step_backard = {'v': (-1, 0), '<': (0, 1), '^': (1,0), '>': (0, -1)}
         self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
         self.block = '#'
         self.visited = 'X'
         self.num_rows = 0
         self.num_cols = 0
         self.obstacles_placed = []
+        self.possible_obstacle_locations = []
         self.place_obstacles = place_obstacles
         return
     
@@ -70,6 +72,12 @@ class Lab:
                     count += 1
         return count
     
+    def creates_loop(self):
+        return False
+    
+    def look_behind_for_obstacle_candidates(self):
+        pass
+    
     def move_guard(self, position):
         row = position[0]
         col = position[1]
@@ -85,7 +93,12 @@ class Lab:
                 return
             if self.map[next_row][next_col] == self.block:
                 self.map[row][col] = self.turn[guard]
+                if self.place_obstacles:
+                    self.look_behind_for_obstacle_candidates()
             else:
+                if self.place_obstacles:
+                    if next_step in self.possible_obstacle_locations:
+                        self.obstacles_placed.append(next_step)
                 self.map[next_row][next_col] = guard
 
 
@@ -144,6 +157,8 @@ def main(arguments):
         lab.print_map()
     if 'a' in sections:
         print(f'The guards visited {lab.count_visited_positions()} positions')
+    if 'b' in sections:
+        print(f'We found {len(lab.obstacles_placed)} locations to create loops')
 
     return
 
