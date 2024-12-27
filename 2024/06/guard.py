@@ -14,7 +14,7 @@ class Lab:
     def __init__(self, place_obstacles):
         self.map = []
         self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
-        self.step_backard = {'v': (-1, 0), '<': (0, 1), '^': (1,0), '>': (0, -1)}
+        self.step_backward = {'v': (-1, 0), '<': (0, 1), '^': (1,0), '>': (0, -1)}
         self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
         self.block = '#'
         self.visited = 'X'
@@ -83,10 +83,6 @@ class Lab:
     def look_behind_for_obstacle_candidates(self, position, guard):
         previous_guard = list(self.turn.keys())[list(self.turn.values()).index(guard)]
         while True:
-            position = self.next_position(position, guard)
-            if not self.is_valid_position(position):
-                break
-
             look_position = self.next_position(position, previous_guard)
             if not self.is_valid_position(position):
                 break
@@ -96,10 +92,13 @@ class Lab:
             if looked_at  == self.block or looked_at == self.visited:
                 pass
             self.possible_obstacle_locations.append((look_position, previous_guard))
+            position = self.next_position(position, guard, self.step_backward)
         pass
 
-    def next_position(self, position, guard):
-        direction = self.step[guard]
+    def next_position(self, position, guard, step=[]):
+        if not step:
+            step = self.step
+        direction = step[guard]
         return (position[0]+direction[0], position[1]+direction[1])
     
     def move_guard(self, position):
@@ -122,7 +121,7 @@ class Lab:
                     self.look_behind_for_obstacle_candidates(position, guard)
             else:
                 if self.place_obstacles:
-                    if next_step in self.possible_obstacle_locations:
+                    if (next_step, guard) in self.possible_obstacle_locations:
                         self.obstacles_placed.append(next_step)
                 self.map[next_row][next_col] = guard
 
@@ -168,6 +167,8 @@ def main(arguments):
         if verbose:
             lab.print_map()
 
+    guard_position = lab.guard_position()
+    lab.look_behind_for_obstacle_candidates(guard_position, lab.map[guard_position[0]][guard_position[1]])
     go_again = True
     while go_again:
         guard_position = lab.guard_position()
