@@ -72,8 +72,36 @@ class Lab:
                     count += 1
         return count
     
-    def look_behind_for_obstacle_candidates(self):
+    def is_valid_position(self, position):
+        row = position[0]
+        col = position[1]
+        if row < 0 or row >= self.num_rows:
+            return False
+        if col < 0 or col >= self.num_cols:
+            return False
+        return True
+    
+    def look_behind_for_obstacle_candidates(self, position, guard):
+        previous_guard = list(self.turn.keys())[list(self.turn.values()).index(guard)]
+        while True:
+            position = self.next_position(position, guard)
+            if not self.is_valid_position(position):
+                break
+
+            look_position = self.next_position(position, previous_guard)
+            if not self.is_valid_position(position):
+                break
+            row_look = look_position[0]
+            col_look = look_position[1]
+            looked_at = self.map[row_look][col_look]
+            if looked_at  == self.block or looked_at == self.visited:
+                pass
+            self.possible_obstacle_locations.append((look_position, previous_guard))
         pass
+
+    def next_position(self, position, guard):
+        direction = self.step[guard]
+        return (position[0]+direction[0], position[1]+direction[1])
     
     def move_guard(self, position):
         row = position[0]
@@ -81,6 +109,7 @@ class Lab:
         guard = self.map[row][col]
         if guard in self.turn:
             self.map[row][col] = self.visited
+
             next_step = self.step[guard]
             next_row = row + next_step[0]
             next_col = col + next_step[1]
@@ -91,7 +120,7 @@ class Lab:
             if self.map[next_row][next_col] == self.block:
                 self.map[row][col] = self.turn[guard]
                 if self.place_obstacles:
-                    self.look_behind_for_obstacle_candidates()
+                    self.look_behind_for_obstacle_candidates(position, guard)
             else:
                 if self.place_obstacles:
                     if next_step in self.possible_obstacle_locations:
