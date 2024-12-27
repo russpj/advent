@@ -39,7 +39,10 @@ class Lab:
     def print_map(self):
         for row in range(self.num_rows):
             for col in range(self.num_cols):
-                print(self.map[row][col], end='')
+                if (row, col) in self.obstacles_placed:
+                    print ('O', end='')
+                else:
+                    print(self.map[row][col], end='')
             print()
         print()
 
