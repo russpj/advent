@@ -6,7 +6,7 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
-
+from time import process_time
 
 app_name = 'guard.py'
 
@@ -169,6 +169,7 @@ def main(arguments):
         if verbose:
             lab.print_map()
 
+    time_start = process_time()
     guard_position = lab.guard_position()
     lab.look_behind_for_obstacle_candidates(guard_position, lab.map[guard_position[0]][guard_position[1]])
     go_again = True
@@ -180,12 +181,14 @@ def main(arguments):
             if verbose:
                 lab.print_map_near_position(guard_position)
             lab.move_guard(guard_position)
+    time_end = process_time()
     if verbose:
         lab.print_map()
     if 'a' in sections:
         print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
         print(f'We found {len(lab.obstacles_placed)} locations to create loops')
+    print(f'Time taken: {time_end - time_start} seconds.')
 
     return
 
