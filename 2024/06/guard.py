@@ -105,12 +105,15 @@ class Lab:
         direction = step[guard]
         return (position[0]+direction[0], position[1]+direction[1])
     
-    def move_guard(self, position):
-        row = position[0]
-        col = position[1]
+    def mark_visited(self, position):
+        row, col = position
+        self.map[row][col] = self.visited
+
+    def move_guard(self, position, check_for_loops = False):
+        row, col = position
         guard = self.map[row][col]
         if guard in self.turn:
-            self.map[row][col] = self.visited
+            self.mark_visited(position)
 
             next_position = self.next_position(position, guard)
             next_row, next_col = next_position
@@ -124,8 +127,9 @@ class Lab:
                 if self.place_obstacles:
                     self.look_behind_for_obstacle_candidates(position, guard)
                 after_turn = self.next_position(position, new_guard)
-                if self.map[after_turn[0]][after_turn[1]] != self.block:
-                    self.uturn_locations.append(after_turn)
+                if not check_for_loops:
+                    if self.map[after_turn[0]][after_turn[1]] != self.block:
+                        self.uturn_locations.append(after_turn)
             else:
                 if self.place_obstacles:
                     if (next_position, guard) in self.possible_obstacle_locations:
