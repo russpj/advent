@@ -23,6 +23,7 @@ class Lab:
         self.obstacles_placed = []
         self.possible_obstacle_locations = []
         self.place_obstacles = place_obstacles
+        self.uturn_locations = []
         return
     
     def set_map(self, map):
@@ -118,9 +119,13 @@ class Lab:
                 return
 
             if self.map[next_row][next_col] == self.block:
-                self.map[row][col] = self.turn[guard]
+                new_guard = self.turn[guard]
+                self.map[row][col] = new_guard
                 if self.place_obstacles:
                     self.look_behind_for_obstacle_candidates(position, guard)
+                after_turn = self.next_position(position, new_guard)
+                if self.map[after_turn[0]][after_turn[1]] != self.block:
+                    self.uturn_locations.append(after_turn)
             else:
                 if self.place_obstacles:
                     if (next_position, guard) in self.possible_obstacle_locations:
@@ -188,6 +193,7 @@ def main(arguments):
         print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
         print(f'We found {len(lab.obstacles_placed)} locations to create loops')
+        print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
     print(f'Time taken: {time_end - time_start} seconds.')
 
     return
