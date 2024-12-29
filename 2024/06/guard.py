@@ -136,6 +136,27 @@ class Lab:
                         self.obstacles_placed.append(next_position)
                 self.map[next_row][next_col] = guard
 
+    def is_uturn_loop(self, position):
+        guard_position = self.guard_position()
+        go_again = True
+        while go_again:
+            guard_position = self.guard_position()
+            if not guard_position:
+                go_again = False
+            else:
+                self.move_guard(guard_position)
+
+        return False
+    
+    def count_uturn_loops(self):
+        uturn_loops_count = 0
+        for position in self.uturn_locations:
+            print('.', end='')
+            if self.is_uturn_loop(position):
+                uturn_loops_count += 1
+        print()
+        return uturn_loops_count
+    
 
 def main(arguments):
     program_name = app_name
@@ -196,8 +217,11 @@ def main(arguments):
     if 'a' in sections:
         print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
-        print(f'We found {len(lab.obstacles_placed)} locations to create loops')
-        print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
+        if verbose:
+            print(f'The look behind method found {len(lab.obstacles_placed)} locations to create loops')
+            print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
+        uturn_loops = lab.count_uturn_loops()    
+        print(f'We found {len(lab.obstacles_placed)+uturn_loops} total locations to create loops')
     print(f'Time taken: {time_end - time_start} seconds.')
 
     return
