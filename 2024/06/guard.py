@@ -17,6 +17,7 @@ class Lab:
         self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
         self.step_backward = {'v': (-1, 0), '<': (0, 1), '^': (1,0), '>': (0, -1)}
         self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
+        self.guard_position = ()
         self.block = '#'
         self.visited = 'X'
         self.num_rows = 0
@@ -36,6 +37,10 @@ class Lab:
             self.num_cols = len(map[0])
             for row in map:
                 self.map.append([*row])
+                row_index = len(self.map)-1
+                for col_index in range(len(self.map[-1])):
+                    if self.map[row_index][col_index] in self.turn:
+                        self.guard_position = (row_index, col_index)
 
     def print_map(self):
         for row in range(self.num_rows):
@@ -57,7 +62,7 @@ class Lab:
                 print()
         print()
     
-    def guard_position(self):
+    def set_guard_position(self):
         for row in range(len(self.map[0])):
             if row >= 0:
                 for col in range(len(self.map[row])):
@@ -132,6 +137,7 @@ class Lab:
             next_row, next_col = next_position
 
             if not self.is_valid_position(next_position):
+                self.guard_position = ()
                 return False
 
             if self.map[next_row][next_col] == self.block:
@@ -148,14 +154,13 @@ class Lab:
                     if (next_position, guard) in self.possible_obstacle_locations:
                         self.obstacles_placed.append(next_position)
                 self.map[next_row][next_col] = guard
+                self.guard_position = next_position
         return False
 
     def is_uturn_loop(self):
-        guard_position = self.guard_position()
-        while guard_position:
-            if self.move_guard(guard_position, check_for_loops=True):
+        while self.guard_position:
+            if self.move_guard(self.guard_position, check_for_loops=True):
                 return True
-            guard_position = self.guard_position()
         return False
     
     def count_uturn_loops(self, map):
@@ -217,15 +222,13 @@ def main(arguments):
             lab.print_map()
 
     time_start = process_time()
-    guard_position = lab.guard_position()
-    lab.look_behind_for_obstacle_candidates(guard_position, lab.map[guard_position[0]][guard_position[1]])
+    lab.look_behind_for_obstacle_candidates(lab.guard_position, lab.map[lab.guard_position[0]][lab.guard_position[1]])
     go_again = True
     while go_again:
-        guard_position = lab.guard_position()
-        if not guard_position:
+        if not lab.guard_position:
             go_again = False
         else:
-            lab.move_guard(guard_position)
+            lab.move_guard(lab.guard_position)
     if lab.verbose:
         lab.print_map()
     if 'a' in sections:
