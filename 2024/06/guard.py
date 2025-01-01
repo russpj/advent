@@ -89,7 +89,8 @@ class Lab:
             return False
         return True
     
-    def look_behind_for_obstacle_candidates(self, position, guard):
+    def look_behind_for_obstacle_candidates(self, guard):
+        position = self.guard_position
         previous_guard = list(self.turn.keys())[list(self.turn.values()).index(guard)]
         while True:
             look_position = self.next_position(position, previous_guard)
@@ -144,7 +145,7 @@ class Lab:
                 new_guard = self.turn[guard]
                 self.map[row][col] = new_guard
                 if self.place_obstacles:
-                    self.look_behind_for_obstacle_candidates(position, guard)
+                    self.look_behind_for_obstacle_candidates(guard)
                 after_turn = self.next_position(position, new_guard)
                 if not check_for_loops:
                     if self.map[after_turn[0]][after_turn[1]] != self.block:
@@ -222,7 +223,7 @@ def main(arguments):
             lab.print_map()
 
     time_start = process_time()
-    lab.look_behind_for_obstacle_candidates(lab.guard_position, lab.map[lab.guard_position[0]][lab.guard_position[1]])
+    lab.look_behind_for_obstacle_candidates(lab.map[lab.guard_position[0]][lab.guard_position[1]])
     go_again = True
     while go_again:
         if not lab.guard_position:
