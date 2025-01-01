@@ -20,6 +20,8 @@ class Evaluator:
             return left+right
         if operator == '*':
             return left*right
+        if operator == '||':
+            return int(str(left)+str(right))
         return 0
 
     def possible_values(self, accumulator, operands):
@@ -82,8 +84,16 @@ def main(arguments):
             for equation in equations:
                 if evaluator.can_equation_be_valid(equation):
                     sum_of_targets += equation[0]
-            print(f'The sum of valid targets is {sum_of_targets}')
+            print(f'The sum of valid targets with {evaluator.operators} is {sum_of_targets}')
 
+        if 'b' in sections:
+            sum_of_targets = 0
+            evaluator = Evaluator()
+            evaluator.operators.append('||')
+            for equation in equations:
+                if evaluator.can_equation_be_valid(equation):
+                    sum_of_targets += equation[0]
+            print(f'The sum of valid targets with {evaluator.operators} is {sum_of_targets}')
     return
 
 
