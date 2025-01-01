@@ -137,13 +137,9 @@ class Lab:
 
     def is_uturn_loop(self, position):
         guard_position = self.guard_position()
-        go_again = True
-        while go_again:
+        while guard_position:
+            self.move_guard(guard_position, check_for_loops=True)
             guard_position = self.guard_position()
-            if not guard_position:
-                go_again = False
-            else:
-                self.move_guard(guard_position, check_for_loops=True)
 
         return False
     
