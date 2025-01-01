@@ -6,6 +6,7 @@
 
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
+from time import process_time
 
 
 app_name = 'advent.py'
@@ -39,8 +40,11 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
 
+    time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+    time_end = process_time()
+    print(f'Time taken: {time_end - time_start} seconds.')
 
     return
 
