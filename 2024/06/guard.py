@@ -107,6 +107,8 @@ class Lab:
         self.map[row][col] = self.visited
 
     def move_guard(self, position, check_for_loops = False):
+        if self.verbose:
+            self.print_map_near_position(position)
         row, col = position
         guard = self.map[row][col]
         if guard in self.turn:
@@ -148,6 +150,7 @@ class Lab:
     def count_uturn_loops(self, map):
         uturn_loops_count = 0
         test_for_loops = Lab(place_obstacles=False)
+        test_for_loops.verbose = self.verbose
         for position in self.uturn_locations:
             test_for_loops.set_map(map)
             print('.', end='')
@@ -187,6 +190,7 @@ def main(arguments):
 
     place_obstacles = 'b' in section
     lab = Lab(place_obstacles)
+    lab.verbose = verbose
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
@@ -195,7 +199,7 @@ def main(arguments):
             for line in input_file:
                 map.append(line.strip())
         lab.set_map(map)
-        if verbose:
+        if lab.verbose:
             lab.print_map()
 
     time_start = process_time()
@@ -207,16 +211,14 @@ def main(arguments):
         if not guard_position:
             go_again = False
         else:
-            if verbose:
-                lab.print_map_near_position(guard_position)
             lab.move_guard(guard_position)
     time_end = process_time()
-    if verbose:
+    if lab.verbose:
         lab.print_map()
     if 'a' in sections:
         print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
-        if verbose:
+        if lab.verbose:
             print(f'The look behind method found {len(lab.obstacles_placed)} locations to create loops')
             print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
         uturn_loops = lab.count_uturn_loops(map)    
