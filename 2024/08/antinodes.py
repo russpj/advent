@@ -34,14 +34,18 @@ class Stations:
                 yield (first, second)
         return
     
-    def print_station_pairs(self):
+    def station_pairs(self):
         for station in self.locations:
-            print(f'Station {station}: ', end='')
             locations = self.locations[station]
             for pair in self.unique_pairs(len(locations)):
-                print(f'({locations[pair[0]]},{locations[pair[1]]})  ', end = '')
-            print()
-
+                pair_locations = (locations[pair[0]], locations[pair[1]])
+                yield (station, pair_locations)
+    
+    def print_station_pairs(self):
+        for station_pair in self.station_pairs():
+            print(f'{station_pair}')
+        return
+    
     def add_station(self, station, row, col):
         if station in self.locations:
             locations = self.locations[station]
