@@ -141,15 +141,17 @@ class Lab:
             if not guard_position:
                 go_again = False
             else:
-                self.move_guard(guard_position)
+                self.move_guard(guard_position, check_for_loops=True)
 
         return False
     
-    def count_uturn_loops(self):
+    def count_uturn_loops(self, map):
         uturn_loops_count = 0
+        test_for_loops = Lab(place_obstacles=False)
         for position in self.uturn_locations:
+            test_for_loops.set_map(map)
             print('.', end='')
-            if self.is_uturn_loop(position):
+            if test_for_loops.is_uturn_loop(position):
                 uturn_loops_count += 1
         print()
         return uturn_loops_count
@@ -217,7 +219,7 @@ def main(arguments):
         if verbose:
             print(f'The look behind method found {len(lab.obstacles_placed)} locations to create loops')
             print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
-        uturn_loops = lab.count_uturn_loops()    
+        uturn_loops = lab.count_uturn_loops(map)    
         print(f'We found {len(lab.obstacles_placed)+uturn_loops} total locations to create loops')
     print(f'Time taken: {time_end - time_start} seconds.')
 
