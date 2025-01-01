@@ -12,6 +12,12 @@ from string import ascii_letters, digits
 
 app_name = 'antinodes.py'
 
+def list_sum(left, right):
+    return tuple([left[i]+ right[i] for i in range(len(left))])
+
+def list_diff(left, right):
+    return tuple([left[i]-right[i] for i in range(len(left))])
+
 class Stations:
     def __init__(self):
         self.locations = {}
@@ -59,16 +65,13 @@ class Stations:
         return
     
     def location_pair_difference(self, location_pair):
-        return (location_pair[1][0] - location_pair[0][0], \
-                location_pair[1][1] - location_pair[0][1])
+        return list_diff(location_pair[1], location_pair[0])
     
     def location_pair_subtract(self, location_pair, delta):
-        return (location_pair[0][0]-delta[0], \
-                location_pair[0][1]-delta[1])
+        return list_diff(location_pair[0], delta)
     
     def location_pair_add(self, location_pair, delta):
-        return (location_pair[1][0]+delta[0], \
-                location_pair[1][1]+delta[1])
+        return list_sum(location_pair[1], delta)
     
     def is_in_map(self, location):
         row, col = location
