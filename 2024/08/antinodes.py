@@ -27,7 +27,7 @@ class Stations:
                 station = line[col]
                 if station in self.station_names:
                     self.add_station(station, row, col)
-            self.num_cols = col
+            self.num_cols = len(line)
             row += 1
         self.num_rows = row
         return
@@ -78,17 +78,18 @@ class Stations:
             return False
         return True
     
+    def add_antinode(self, antinode):
+        if self.is_in_map(antinode):
+            if not antinode in self.antinodes:
+                self.antinodes.append(antinode)
+    
     def find_antinodes(self):
         self.antinodes = []
         for station_pair in self.station_pairs():
             location_pair = station_pair[1]
             delta = self.location_pair_difference(location_pair)
-            lower_antinode = self.location_pair_subtract(location_pair, delta)
-            upper_antinode = self.location_pair_add(location_pair, delta)
-            if self.is_in_map(lower_antinode):
-                self.antinodes.append(lower_antinode)
-            if self.is_in_map(upper_antinode):
-                self.antinodes.append(upper_antinode)
+            self.add_antinode(self.location_pair_subtract(location_pair, delta))
+            self.add_antinode(self.location_pair_add(location_pair, delta))
         return
     
     def print_antinodes(self):
