@@ -16,6 +16,8 @@ class Stations:
     def __init__(self):
         self.locations = {}
         self.station_names = list(ascii_letters+digits)
+        self.num_cols = 0
+        self.num_rows = 0
 
     def read_file(self, file):
         row = 0
@@ -25,7 +27,9 @@ class Stations:
                 station = line[col]
                 if station in self.station_names:
                     self.add_station(station, row, col)
+            self.num_cols = col
             row += 1
+        self.num_rows = row
         return
     
     def unique_pairs(self, n):
@@ -53,6 +57,44 @@ class Stations:
         else:
             self.locations[station] = [(row, col)]
         return
+    
+    def location_pair_difference(self, location_pair):
+        return (location_pair[1][0] - location_pair[0][0], \
+                location_pair[1][1] - location_pair[0][1])
+    
+    def location_pair_subtract(self, location_pair, delta):
+        return (location_pair[0][0]-delta[0], \
+                location_pair[0][1]-delta[1])
+    
+    def location_pair_add(self, location_pair, delta):
+        return (location_pair[1][0]+delta[0], \
+                location_pair[1][1]+delta[1])
+    
+    def is_in_map(self, location):
+        row, col = location
+        if row < 0 or row >= self.num_rows:
+            return False
+        if col < 0 or col >= self.num_cols:
+            return False
+        return True
+    
+    def find_antinodes(self):
+        self.antinodes = []
+        for station_pair in self.station_pairs():
+            location_pair = station_pair[1]
+            delta = self.location_pair_difference(location_pair)
+            lower_antinode = self.location_pair_subtract(location_pair, delta)
+            upper_antinode = self.location_pair_add(location_pair, delta)
+            if self.is_in_map(lower_antinode):
+                self.antinodes.append(lower_antinode)
+            if self.is_in_map(upper_antinode):
+                self.antinodes.append(upper_antinode)
+        return
+    
+    def print_antinodes(self):
+        print(f'Antinodes:')
+        for antinode in sorted(self.antinodes):
+            print(f'{antinode}')
         
 
 def main(arguments):
@@ -94,6 +136,10 @@ def main(arguments):
         print(f'Processing section {section}')
         if verbose:
             stations.print_station_pairs()
+        stations.find_antinodes()
+        if verbose:
+            stations.print_antinodes()
+        print(f'There are {len(stations.antinodes)} antinodes in the map')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
