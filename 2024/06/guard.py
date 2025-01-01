@@ -226,17 +226,17 @@ def main(arguments):
             go_again = False
         else:
             lab.move_guard(guard_position)
-    time_end = process_time()
     if lab.verbose:
         lab.print_map()
     if 'a' in sections:
         print(f'The guard visited {lab.count_visited_positions()} positions')
     if 'b' in sections:
-        if lab.verbose:
+        if lab.verbose or True:
             print(f'The look behind method found {len(lab.obstacles_placed)} locations to create loops')
             print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
         uturn_loops = lab.count_uturn_loops(map)    
         print(f'We found {len(lab.obstacles_placed)+uturn_loops} total locations to create loops')
+    time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
     return
