@@ -158,7 +158,7 @@ class Lab:
                 self.guard_position = next_position
         return False
 
-    def is_uturn_loop(self):
+    def is_loop(self):
         while self.guard_position:
             if self.move_guard(self.guard_position, check_for_loops=True):
                 return True
@@ -171,13 +171,31 @@ class Lab:
         for position in self.uturn_locations:
             test_for_loops.set_map(map)
             test_for_loops.map[position[0]][position[1]] = test_for_loops.block
-            if test_for_loops.is_uturn_loop():
+            if test_for_loops.is_loop():
                 uturn_loops_count += 1
                 print('+', end='')
             else:
                 print('.', end='')
         print()
-        return uturn_loops_count
+        return uturn_loops_count    
+
+    def count_path_loops(self, finished_map, original_map):
+        loops_count = 0
+        test_for_loops = Lab(place_obstacles=False)
+        test_for_loops.verbose = self.verbose
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
+                test_for_loops.set_map(original_map)
+                if finished_map[row][col] == test_for_loops.visited:
+                    if (row, col) != test_for_loops.guard_position:
+                        test_for_loops.map[row][col] = test_for_loops.block
+                        if test_for_loops.is_loop():
+                            loops_count += 1
+                            print('+', end='')
+                        else:
+                            print('.', end='')
+        print()
+        return loops_count
     
 
 def main(arguments):
@@ -240,6 +258,9 @@ def main(arguments):
             print(f'There are {len(lab.uturn_locations)} positions to check for u-turns')
         uturn_loops = lab.count_uturn_loops(map)    
         print(f'We found {len(lab.obstacles_placed)+uturn_loops} total locations to create loops')
+        print("Let's try another approach")
+        path_loops = lab.count_path_loops(lab.map, map)
+        print(f'We found {path_loops} obstacle placements along the entire path')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
