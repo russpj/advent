@@ -31,11 +31,8 @@ class Lab:
         self.num_rows = len(map)
         if self.num_rows:
             self.num_cols = len(map[0])
-            for row in range(self.num_rows):
-                map_row = []
-                for col in range(self.num_cols):
-                    map_row.append(map[row][col])
-                self.map.append(map_row)
+            for row in map:
+                self.map.append([*row])
 
     def print_map(self):
         for row in range(self.num_rows):
