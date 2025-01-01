@@ -24,6 +24,7 @@ class Lab:
         self.possible_obstacle_locations = []
         self.place_obstacles = place_obstacles
         self.uturn_locations = []
+        self.verbose = False
         return
     
     def set_map(self, map):
