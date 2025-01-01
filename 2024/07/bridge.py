@@ -11,6 +11,23 @@ from getopt import getopt, GetoptError
 app_name = 'bridge.py'
 
 
+class Evaluator:
+    def __init__(self):
+        self.operands = ['+', '*']
+
+    def possible_values(self, operands):
+        for operand in operands:
+            yield operand
+
+    def can_equation_be_valid(self, equation):
+        target = equation[0]
+        operands = equation[1]
+        for value in self.possible_values(operands):
+            if value == target:
+                return True
+        return False
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
@@ -38,9 +55,23 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            equations = []
+            for line in input_file:
+                target, operands = line.split(':')
+                target = int(target)
+                operands = operands.strip().split(' ')
+                operands = [int(x) for x in operands]
+                equations.append((target, operands))
 
     for section in sections:
         print(f'Processing section {section}')
+        if 'a' in sections:
+            sum_of_targets = 0
+            evaluator = Evaluator()
+            for equation in equations:
+                if evaluator.can_equation_be_valid(equation):
+                    sum_of_targets += equation[0]
+            print(f'The sum of valid targets is {sum_of_targets}')
 
     return
 
