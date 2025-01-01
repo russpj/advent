@@ -13,16 +13,27 @@ app_name = 'bridge.py'
 
 class Evaluator:
     def __init__(self):
-        self.operands = ['+', '*']
+        self.operators = ['+', '*']
 
-    def possible_values(self, operands):
-        for operand in operands:
-            yield operand
+    def evaluate_operator(self, operator, left, right):
+        if operator == '+':
+            return left+right
+        if operator == '*':
+            return left*right
+        return 0
+
+    def possible_values(self, accumulator, operands):
+        if len(operands) == 0:
+            yield accumulator
+        else:
+            for operator in self.operators:
+                result = self.evaluate_operator(operator, accumulator, operands[0])
+                yield from self.possible_values(result, operands[1:])
 
     def can_equation_be_valid(self, equation):
         target = equation[0]
         operands = equation[1]
-        for value in self.possible_values(operands):
+        for value in self.possible_values(operands[0], operands[1:]):
             if value == target:
                 return True
         return False
