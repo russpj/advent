@@ -13,6 +13,7 @@ app_name = 'guard.py'
 class Lab:
     def __init__(self, place_obstacles):
         self.map = []
+        self.visit_detail = {}
         self.step = {'v': (1, 0), '<': (0, -1), '^': (-1, 0), '>': (0, 1)}
         self.step_backward = {'v': (-1, 0), '<': (0, 1), '^': (1,0), '>': (0, -1)}
         self.turn = {'v': '<', '<': '^', '^': '>', '>': 'v'}
@@ -28,6 +29,7 @@ class Lab:
         return
     
     def set_map(self, map):
+        self.visit_detail = {}
         self.map = []
         self.num_rows = len(map)
         if self.num_rows:
@@ -103,9 +105,18 @@ class Lab:
         direction = step[guard]
         return (position[0]+direction[0], position[1]+direction[1])
     
-    def mark_visited(self, position):
-        row, col = position
-        self.map[row][col] = self.visited
+    def mark_visited(self, position, guard):
+        key = tuple(position)
+        self.map[position[0]][position[1]] = self.visited
+        if key in self.visit_detail:
+            guards = self.visit_detail[key]
+            if guard in guards:
+                return True
+            else:
+                guards.append(guard)
+        else:
+            self.visit_detail[key] = [guard]
+        return False
 
     def move_guard(self, position, check_for_loops = False):
         if self.verbose:
@@ -113,13 +124,15 @@ class Lab:
         row, col = position
         guard = self.map[row][col]
         if guard in self.turn:
-            self.mark_visited(position)
+            repeat = self.mark_visited(position, guard)
+            if check_for_loops and repeat:
+                return True
 
             next_position = self.next_position(position, guard)
             next_row, next_col = next_position
 
             if not self.is_valid_position(next_position):
-                return
+                return False
 
             if self.map[next_row][next_col] == self.block:
                 new_guard = self.turn[guard]
@@ -135,6 +148,7 @@ class Lab:
                     if (next_position, guard) in self.possible_obstacle_locations:
                         self.obstacles_placed.append(next_position)
                 self.map[next_row][next_col] = guard
+        return False
 
     def is_uturn_loop(self):
         guard_position = self.guard_position()
@@ -149,11 +163,13 @@ class Lab:
         test_for_loops = Lab(place_obstacles=False)
         test_for_loops.verbose = self.verbose
         for position in self.uturn_locations:
-            print('.', end='')
             test_for_loops.set_map(map)
             test_for_loops.map[position[0]][position[1]] = test_for_loops.block
             if test_for_loops.is_uturn_loop():
                 uturn_loops_count += 1
+                print('+', end='')
+            else:
+                print('.', end='')
         print()
         return uturn_loops_count
     
