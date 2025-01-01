@@ -135,12 +135,12 @@ class Lab:
                         self.obstacles_placed.append(next_position)
                 self.map[next_row][next_col] = guard
 
-    def is_uturn_loop(self, position):
+    def is_uturn_loop(self):
         guard_position = self.guard_position()
         while guard_position:
-            self.move_guard(guard_position, check_for_loops=True)
+            if self.move_guard(guard_position, check_for_loops=True):
+                return True
             guard_position = self.guard_position()
-
         return False
     
     def count_uturn_loops(self, map):
@@ -148,9 +148,10 @@ class Lab:
         test_for_loops = Lab(place_obstacles=False)
         test_for_loops.verbose = self.verbose
         for position in self.uturn_locations:
-            test_for_loops.set_map(map)
             print('.', end='')
-            if test_for_loops.is_uturn_loop(position):
+            test_for_loops.set_map(map)
+            test_for_loops.map[position[0]][position[1]] = test_for_loops.block
+            if test_for_loops.is_uturn_loop():
                 uturn_loops_count += 1
         print()
         return uturn_loops_count
