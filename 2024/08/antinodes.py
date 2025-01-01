@@ -27,6 +27,20 @@ class Stations:
                     self.add_station(station, row, col)
             row += 1
         return
+    
+    def unique_pairs(self, n):
+        for first in range(n):
+            for second in range(first+1, n):
+                yield (first, second)
+        return
+    
+    def print_station_pairs(self):
+        for station in self.locations:
+            print(f'Station {station}: ', end='')
+            locations = self.locations[station]
+            for pair in self.unique_pairs(len(locations)):
+                print(f'({locations[pair[0]]},{locations[pair[1]]})  ', end = '')
+            print()
 
     def add_station(self, station, row, col):
         if station in self.locations:
@@ -70,6 +84,7 @@ def main(arguments):
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        stations.print_station_pairs()
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
