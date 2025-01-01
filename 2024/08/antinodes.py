@@ -85,6 +85,30 @@ class Stations:
         if self.is_in_map(antinode):
             if not antinode in self.antinodes:
                 self.antinodes.append(antinode)
+        return
+    
+    def generate_pair_differences(self, left, right):
+        while self.is_in_map(left):
+            yield left
+            left = list_diff(left, right)
+        return
+    
+    def generate_pair_sums(self, left, right):
+        while self.is_in_map(left):
+            yield left
+            left = list_sum(left, right)
+        return
+    
+    def find_repeated_antinodes(self):
+        self.antinodes = []
+        for station_pair in self.station_pairs():
+            location_pair = station_pair[1]
+            delta = self.location_pair_difference(location_pair)
+            for antinode in self.generate_pair_differences(location_pair[0], delta):
+                self.add_antinode(antinode)
+            for antinode in self.generate_pair_sums(location_pair[1], delta):
+                self.add_antinode(antinode)            
+        return
     
     def find_antinodes(self):
         self.antinodes = []
@@ -140,10 +164,17 @@ def main(arguments):
         print(f'Processing section {section}')
         if verbose:
             stations.print_station_pairs()
-        stations.find_antinodes()
-        if verbose:
-            stations.print_antinodes()
-        print(f'There are {len(stations.antinodes)} antinodes in the map')
+        if section == 'a':
+            stations.find_antinodes()
+            if verbose:
+                stations.print_antinodes()
+            print(f'There are {len(stations.antinodes)} simple antinodes in the map')
+        if section == 'b':
+            stations.find_repeated_antinodes()
+            if verbose:
+                stations.print_antinodes()
+            print(f'There are {len(stations.antinodes)} repeated antinodes in the map')
+
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
