@@ -50,6 +50,15 @@ class Defragger:
             reading_file = not reading_file                
         return
 
+    def print_disk_map(self):
+        for block in self.block_list:
+            if block.free_space:
+                print('.'*block.size, end='')
+            else:
+                print(str(block.id)*block.size, end='')
+        print()
+        return
+
 
 def main(arguments):
     program_name = app_name
@@ -86,6 +95,8 @@ def main(arguments):
             print(f'Opened {input_file_name} for {app_name}')
             compressed_data = input_file.readline()
             defrag.parse(compressed_data)
+            if verbose:
+                defrag.print_disk_map()
 
     time_start = process_time()
     for section in sections:
