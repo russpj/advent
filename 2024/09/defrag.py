@@ -35,6 +35,7 @@ class Defragger:
 
     def parse(self, compressed_directory):
         self.block_list = []
+        self.sector_map = []
         reading_file = True
         file_id = 0
         for digit in compressed_directory:
@@ -42,20 +43,31 @@ class Defragger:
             if reading_file:
                 block = Disk_Block(size, id=file_id)
                 self.block_list.append(block)
+                self.sector_map.extend([file_id]*size)
                 file_id += 1
             else:
                 if size > 0:
                     block = Disk_Block(size, free_space=True)
                     self.block_list.append(block)
+                    self.sector_map.extend([-1]*size)
             reading_file = not reading_file                
         return
 
+    def char_for_id(self, id):
+        char_map = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+        if id < 10:
+            return str(id)
+        else:
+            index = (id-10) % len(char_map)
+            return char_map[index:index+1]
+
     def print_disk_map(self):
-        for block in self.block_list:
-            if block.free_space:
-                print('.'*block.size, end='')
+        for sector in self.sector_map:
+            if sector == -1:
+                ch_output = '.'
             else:
-                print(str(block.id)*block.size, end='')
+                ch_output = self.char_for_id(sector)
+            print(ch_output, end='')
         print()
         return
 
