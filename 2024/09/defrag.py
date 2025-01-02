@@ -12,6 +12,45 @@ from time import process_time
 app_name = 'defrag.py'
 
 
+class Disk_Block:
+    def __init__(self, size, free_space=False, id=None):
+        self.size = size
+        self.free_space = free_space
+        if self.free_space:
+            if not id is None:
+                raise Exception('Disk_Block: free space does not have an id')
+            self.id = id
+        else:
+            if self.size <= 0:
+                raise Exception('Disk_Block: files must have a positive size')
+            self.id = id
+            if self.id is None:
+                raise Exception('Disk_Block: files must have ids')
+        return
+
+
+class Defragger:
+    def __init__(self):
+       return
+
+    def parse(self, compressed_directory):
+        self.block_list = []
+        reading_file = True
+        file_id = 0
+        for digit in compressed_directory:
+            size = int(digit)
+            if reading_file:
+                block = Disk_Block(size, id=file_id)
+                self.block_list.append(block)
+                file_id += 1
+            else:
+                if size > 0:
+                    block = Disk_Block(size, free_space=True)
+                    self.block_list.append(block)
+            reading_file = not reading_file                
+        return
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -40,9 +79,13 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+    defrag = Defragger()
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            compressed_data = input_file.readline()
+            defrag.parse(compressed_data)
 
     time_start = process_time()
     for section in sections:
