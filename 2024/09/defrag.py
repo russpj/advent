@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # defrag
-'''Advent of code template'''
+'''Advent of Code 2024 Day 9: Disk defragmenting'''
 
 
 from sys import stdin, stdout, stderr, argv
@@ -14,12 +14,13 @@ app_name = 'defrag.py'
 
 def main(arguments):
     program_name = app_name
-    command_line_documentation = f'{program_name} --help --section [a|b] --file [input file]'
+    command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
+    verbose = False
     input_file_name = ''
     sections = []
 
     try:
-        opts, args = getopt(arguments, "hs:f:", ("help", "section=", "file="))
+        opts, args = getopt(arguments, "hvs:f:", ("help", "verbose", "section=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
@@ -28,6 +29,9 @@ def main(arguments):
         if opt in ('-h', '--help'):
             print(f'usage: {command_line_documentation}')
             exit(0)
+
+        if opt in ('-v', '--verbose'):
+            verbose = True
 
         if opt in ('-f', '--file'):
             input_file_name = arg
