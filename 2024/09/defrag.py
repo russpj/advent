@@ -52,6 +52,25 @@ class Defragger:
                     self.sector_map.extend([-1]*size)
             reading_file = not reading_file                
         return
+    
+    def next_free_space_index(self, start_index):
+        return self.sector_map[start_index:].index(-1) + start_index
+    
+    def previous_file_index(self, end_index):
+        while self.sector_map[end_index] == -1:
+            end_index -= 1
+        return end_index
+
+    def compact_free_space(self):
+        free_space_index = self.next_free_space_index(0)
+        file_index = self.previous_file_index(len(self.sector_map)-1)
+        while file_index > free_space_index:
+            self.sector_map[file_index], self.sector_map[free_space_index] = \
+            self.sector_map[free_space_index], self.sector_map[file_index]
+            
+            free_space_index = self.next_free_space_index(free_space_index)
+            file_index = self.previous_file_index(file_index)
+        return
 
     def char_for_id(self, id):
         char_map = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -113,6 +132,10 @@ def main(arguments):
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            defrag.compact_free_space()
+            if verbose:
+                defrag.print_disk_map()
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
