@@ -13,7 +13,8 @@ app_name = 'defrag.py'
 
 
 class Disk_Block:
-    def __init__(self, size, free_space=False, id=None):
+    def __init__(self, sector_index, size, free_space=False, id=None):
+        self.sector_index = sector_index
         self.size = size
         self.free_space = free_space
         if self.free_space:
@@ -40,14 +41,15 @@ class Defragger:
         file_id = 0
         for digit in compressed_directory:
             size = int(digit)
+            sector_index = len(self.sector_map)
             if reading_file:
-                block = Disk_Block(size, id=file_id)
+                block = Disk_Block(sector_index, size, id=file_id)
                 self.block_list.append(block)
                 self.sector_map.extend([file_id]*size)
                 file_id += 1
             else:
                 if size > 0:
-                    block = Disk_Block(size, free_space=True)
+                    block = Disk_Block(sector_index, size, free_space=True)
                     self.block_list.append(block)
                     self.sector_map.extend([-1]*size)
             reading_file = not reading_file                
@@ -70,6 +72,15 @@ class Defragger:
             
             free_space_index = self.next_free_space_index(free_space_index)
             file_index = self.previous_file_index(file_index)
+        return
+    
+    def split_free_block(self, block_index, new_first_size):
+        block = self.block_list[block_index]
+        if new_first_size < block.size:
+            new_block = Disk_Block(block.sector_index+new_first_size, \
+                                   block.size-new_first_size, free_space=True)
+            block.size = new_first_size
+            self.block_list.insert(block_index+1, new_block)
         return
 
     def char_for_id(self, id):
@@ -147,6 +158,9 @@ def main(arguments):
             if verbose:
                 defrag.print_disk_map()
             print(f'The compacted filesystem checksome is {defrag.checksum()}')
+        if section == 'b':
+            defrag.split_free_block(1, 2)
+            pass
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
