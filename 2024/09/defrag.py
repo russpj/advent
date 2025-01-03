@@ -89,6 +89,15 @@ class Defragger:
             print(ch_output, end='')
         print()
         return
+    
+    def checksum(self):
+        check_sum = 0
+        for sector_index in range(len(self.sector_map)):
+            file_id = self.sector_map[sector_index]
+            if file_id != -1:
+                sector_value = sector_index*file_id
+                check_sum += sector_value
+        return check_sum
 
 
 def main(arguments):
@@ -133,9 +142,11 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
+            print(f'The original filesystem checksome is {defrag.checksum()}')
             defrag.compact_free_space()
             if verbose:
                 defrag.print_disk_map()
+            print(f'The compacted filesystem checksome is {defrag.checksum()}')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
