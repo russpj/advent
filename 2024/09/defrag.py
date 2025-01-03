@@ -18,6 +18,9 @@ class Disk_Block:
         self.size = size
         return
     
+    def sort_key(self):
+        return self.sector_index
+    
 
 class File_Block(Disk_Block):
     def __init__(self, sector_index, size, file_id):
@@ -96,9 +99,12 @@ class Defragger:
         for file_id in range(len(self.file_block_list)-1,-1,-1):
             file_block = self.file_block_list[file_id]
             free_block = self.find_free_block(file_block.size)
-            if free_block:
+            if free_block and free_block.sector_index < file_block.sector_index:
+                new_free_block = Free_Block(file_block.sector_index, file_block.size)
                 file_block.sector_index = free_block.sector_index
-
+                self.free_block_list.append(new_free_block)
+        self.file_block_list.sort(key=Disk_Block.sort_key)
+        self.free_block_list.sort(key=Disk_Block.sort_key)
         return
 
     def char_for_id(self, id):
@@ -162,6 +168,14 @@ class Defragger:
                 check_sum += sector_value
         return check_sum
 
+    def checksum_block_list(self):
+        check_sum = 0
+        for block in self.file_block_list:
+            for sector_index in range(block.sector_index, block.sector_index+block.size):
+                value = sector_index*block.file_id
+                check_sum += value
+        return check_sum
+
 
 def main(arguments):
     program_name = app_name
@@ -213,9 +227,11 @@ def main(arguments):
         if section == 'b':
             if verbose:
                 defrag.print_block_list()
+            print(f'The original filesystem checksome is {defrag.checksum_block_list()}')
             defrag.defrag_blocks()
             if verbose:
                 defrag.print_block_list()
+            print(f'The compacted filesystem checksome is {defrag.checksum_block_list()}')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
