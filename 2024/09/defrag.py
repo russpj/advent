@@ -82,6 +82,10 @@ class Defragger:
             block.size = new_first_size
             self.block_list.insert(block_index+1, new_block)
         return
+    
+    def defrag_blocks(self, verbose=False):
+        file_index = len(self.block_list)-1
+        return
 
     def char_for_id(self, id):
         char_map = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
@@ -171,7 +175,7 @@ def main(arguments):
         if section == 'b':
             if verbose:
                 defrag.print_block_list()
-            defrag.split_free_block(1, 2)
+            defrag.defrag_blocks()
             if verbose:
                 defrag.print_block_list()
     time_end = process_time()
