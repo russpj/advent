@@ -101,6 +101,16 @@ class Defragger:
         print()
         return
     
+    def print_block_list(self):
+        for block in self.block_list:
+            if block.free_space:
+                print_ch = '.'
+            else:
+                print_ch = self.char_for_id(block.id)
+            print(print_ch*block.size, end='')
+        print()
+        return
+    
     def checksum(self):
         check_sum = 0
         for sector_index in range(len(self.sector_map)):
@@ -159,8 +169,11 @@ def main(arguments):
                 defrag.print_sector_map()
             print(f'The compacted filesystem checksome is {defrag.checksum()}')
         if section == 'b':
+            if verbose:
+                defrag.print_block_list()
             defrag.split_free_block(1, 2)
-            pass
+            if verbose:
+                defrag.print_block_list()
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
