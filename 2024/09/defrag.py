@@ -13,21 +13,21 @@ app_name = 'defrag.py'
 
 
 class Disk_Block:
-    def __init__(self, sector_index, size, free_space=False, id=None):
+    def __init__(self, sector_index, size):
         self.sector_index = sector_index
         self.size = size
-        self.free_space = free_space
-        if self.free_space:
-            if not id is None:
-                raise Exception('Disk_Block: free space does not have an id')
-            self.id = id
-        else:
-            if self.size <= 0:
-                raise Exception('Disk_Block: files must have a positive size')
-            self.id = id
-            if self.id is None:
-                raise Exception('Disk_Block: files must have ids')
         return
+    
+
+class File_Block(Disk_Block):
+    def __init__(self, sector_index, size, file_id):
+        super().__init__(sector_index, size)
+        self.file_id = file_id
+        return
+    
+
+class Free_Block(Disk_Block):
+    pass
 
 
 class Defragger:
@@ -35,7 +35,8 @@ class Defragger:
        return
 
     def parse(self, compressed_directory):
-        self.block_list = []
+        self.free_block_list = []
+        self.file_block_list = []
         self.sector_map = []
         reading_file = True
         file_id = 0
@@ -43,14 +44,14 @@ class Defragger:
             size = int(digit)
             sector_index = len(self.sector_map)
             if reading_file:
-                block = Disk_Block(sector_index, size, id=file_id)
-                self.block_list.append(block)
+                block = File_Block(sector_index, size, file_id)
+                self.file_block_list.append(block)
                 self.sector_map.extend([file_id]*size)
                 file_id += 1
             else:
                 if size > 0:
-                    block = Disk_Block(sector_index, size, free_space=True)
-                    self.block_list.append(block)
+                    block = Free_Block(sector_index, size)
+                    self.free_block_list.append(block)
                     self.sector_map.extend([-1]*size)
             reading_file = not reading_file                
         return
@@ -75,16 +76,15 @@ class Defragger:
         return
     
     def split_free_block(self, block_index, new_first_size):
-        block = self.block_list[block_index]
+        block = self.free_block_list[block_index]
         if new_first_size < block.size:
-            new_block = Disk_Block(block.sector_index+new_first_size, \
-                                   block.size-new_first_size, free_space=True)
+            new_block = Free_Block(block.sector_index+new_first_size, \
+                                   block.size-new_first_size)
             block.size = new_first_size
             self.block_list.insert(block_index+1, new_block)
         return
     
     def defrag_blocks(self, verbose=False):
-        file_index = len(self.block_list)-1
         return
 
     def char_for_id(self, id):
@@ -106,12 +106,36 @@ class Defragger:
         return
     
     def print_block_list(self):
-        for block in self.block_list:
-            if block.free_space:
-                print_ch = '.'
+        file_index = 0
+        free_index = 0
+        while file_index < len(self.file_block_list) or \
+            free_index < len(self.free_block_list):
+            if file_index >= len(self.file_block_list):
+                print_file_block = False
+            elif free_index >= len(self.free_block_list):
+                print_file_block = True
             else:
-                print_ch = self.char_for_id(block.id)
-            print(print_ch*block.size, end='')
+                print_file_block = \
+                    self.file_block_list[file_index].sector_index < \
+                    self.free_block_list[free_index].sector_index
+            if print_file_block:
+                block = self.file_block_list[file_index]
+                print_ch = self.char_for_id(block.file_id)
+                print_len = block.size
+                file_index += 1
+            else:
+                block = self.free_block_list[free_index]
+                print_ch = '.'
+                print_len = block.size
+                free_index += 1
+            print(print_ch*print_len, end='')
+
+        # for block in self.block_list:
+        #     if block.free_space:
+        #         print_ch = '.'
+        #     else:
+        #         print_ch = self.char_for_id(block.id)
+        #     print(print_ch*block.size, end='')
         print()
         return
     
