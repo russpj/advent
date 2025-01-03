@@ -91,7 +91,7 @@ class Defragger:
             index = (id-10) % len(char_map)
             return char_map[index:index+1]
 
-    def print_disk_map(self):
+    def print_sector_map(self):
         for sector in self.sector_map:
             if sector == -1:
                 ch_output = '.'
@@ -147,7 +147,7 @@ def main(arguments):
             compressed_data = input_file.readline()
             defrag.parse(compressed_data)
             if verbose:
-                defrag.print_disk_map()
+                defrag.print_sector_map()
 
     time_start = process_time()
     for section in sections:
@@ -156,7 +156,7 @@ def main(arguments):
             print(f'The original filesystem checksome is {defrag.checksum()}')
             defrag.compact_free_space()
             if verbose:
-                defrag.print_disk_map()
+                defrag.print_sector_map()
             print(f'The compacted filesystem checksome is {defrag.checksum()}')
         if section == 'b':
             defrag.split_free_block(1, 2)
