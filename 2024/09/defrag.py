@@ -81,10 +81,24 @@ class Defragger:
             new_block = Free_Block(block.sector_index+new_first_size, \
                                    block.size-new_first_size)
             block.size = new_first_size
-            self.block_list.insert(block_index+1, new_block)
+            self.free_block_list.insert(block_index+1, new_block)
         return
     
+    def find_free_block(self, size):
+        for free_index in range(len(self.free_block_list)):
+            if self.free_block_list[free_index].size >= size:
+                self.split_free_block(free_index, size)
+                free_block = self.free_block_list.pop(free_index)
+                return free_block
+        return None
+    
     def defrag_blocks(self, verbose=False):
+        for file_id in range(len(self.file_block_list)-1,-1,-1):
+            file_block = self.file_block_list[file_id]
+            free_block = self.find_free_block(file_block.size)
+            if free_block:
+                file_block.sector_index = free_block.sector_index
+
         return
 
     def char_for_id(self, id):
