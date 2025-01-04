@@ -42,7 +42,7 @@ class Trails:
                 yield from self.trail_ends((row, col+1))
         return
     
-    def find_trails(self):
+    def find_trails(self, find_all_routes=True):
         self.trails = {}
         for row_index in range(len(self.grid)):
             for col_index in range(len(self.grid[row_index])):
@@ -50,7 +50,7 @@ class Trails:
                     trail_head = (row_index, col_index)
                     trail_ends = []
                     for trail_end in self.trail_ends(trail_head):
-                        if trail_end not in trail_ends:
+                        if find_all_routes or (trail_end not in trail_ends):
                             trail_ends.append(trail_end)
                     self.trails[trail_head] = trail_ends
         return
@@ -95,7 +95,15 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if 'a' in section:
-            trails.find_trails()
+            trails.find_trails(find_all_routes=False)
+            num_trails = 0
+            for trail_head in trails.trails:
+                num_trails += len(trails.trails[trail_head])
+                if verbose:
+                    print(f'{trail_head}: {trails.trails[trail_head]}')
+            print(f'There were {num_trails} different routes')
+        if 'b' in section:
+            trails.find_trails(find_all_routes=True)
             num_trails = 0
             for trail_head in trails.trails:
                 num_trails += len(trails.trails[trail_head])
