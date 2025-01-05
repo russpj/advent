@@ -17,6 +17,13 @@ class Memoizer:
         self.cache = {}
         return
     
+    def execute_blinks(self, blinks_left, stones):
+        result = []
+        for stone in stones:
+            after_blinks = self.blink(blinks_left, stone)
+            result.extend(after_blinks)
+        return result
+    
     def blink(self, blinks_left, stone):
         if blinks_left == 0:
             return [stone]
@@ -65,21 +72,34 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+    memo = Memoizer()
     if verbose:
-        memo = Memoizer()
         tests = [(0, 1), (1, 1), (45, 1), (125, 6), (17, 6)]
         for test in tests:
             print(f'{test[0]} becomes {memo.blink(test[1], test[0])}')
+        more_tests = [((125, 17), 6)]
+        for test in more_tests:
+            print(f'{test[0]} becomes {memo.execute_blinks(test[1], test[0])}')
+
+    stones = []
+    scenarios = []
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            line = input_file.readline()
+            stones = [int(s) for s in line.split(' ')]            
 
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
-    if verbose:
-        print('Debugging output goes here')
+        if 'a' in section:
+            scenarios.append(25)
+        for scenario in scenarios:    
+            print(f'Processing {stones}')
+            final_stones = memo.execute_blinks(scenario, stones)
+            print(f'after {scenario} blinks, there were {len(final_stones)} stones')
+
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
