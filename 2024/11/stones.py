@@ -67,7 +67,7 @@ def main(arguments):
 
     if verbose:
         memo = Memoizer()
-        tests = [(0, 1), (1, 1), (45, 1), (101, 1)]
+        tests = [(0, 1), (1, 1), (45, 1), (125, 6), (17, 6)]
         for test in tests:
             print(f'{test[0]} becomes {memo.blink(test[1], test[0])}')
 
