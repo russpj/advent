@@ -28,20 +28,27 @@ class Memoizer:
         if blinks_left == 0:
             return [stone]
         
+        cache_key = (stone, blinks_left)
+        if cache_key in self.cache:
+            return self.cache[cache_key]
+        
         if stone == 0:
-            return self.blink(blinks_left-1, 1)
-        
-        stone_label = str(stone)
-        length = len(stone_label)
-        if length % 2 == 0:
-            left_stone = int(stone_label[:length//2])
-            right_stone = int(stone_label[length//2:])
-            left_stones = self.blink(blinks_left-1, left_stone)
-            right_stones = self.blink(blinks_left-1, right_stone)
-            left_stones.extend(right_stones)
-            return left_stones
-        
-        return self.blink(blinks_left-1, stone*2024)
+            return_value = self.blink(blinks_left-1, 1)
+        else:
+            stone_label = str(stone)
+            length = len(stone_label)
+            if length % 2 == 0:
+                left_stone = int(stone_label[:length//2])
+                right_stone = int(stone_label[length//2:])
+                left_stones = self.blink(blinks_left-1, left_stone)
+                right_stones = self.blink(blinks_left-1, right_stone)
+                return_value = [stone for stone in left_stones]
+                return_value.extend(right_stones)
+            else:
+                return_value = self.blink(blinks_left-1, stone*2024)
+
+        self.cache[cache_key] = return_value
+        return return_value
 
 
 def main(arguments):
@@ -95,6 +102,8 @@ def main(arguments):
         print(f'Processing section {section}')
         if 'a' in section:
             scenarios.append(25)
+        if 'b' in section:
+            scenarios.append(75)
         for scenario in scenarios:    
             print(f'Processing {stones}')
             final_stones = memo.execute_blinks(scenario, stones)
