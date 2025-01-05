@@ -18,15 +18,18 @@ class Memoizer:
         return
     
     def execute_blinks(self, blinks_left, stones):
-        result = []
+        result = 0
+        self.cache = {}
         for stone in stones:
             after_blinks = self.blink(blinks_left, stone)
-            result.extend(after_blinks)
+            print('.', end='')
+            result += after_blinks
+        print()
         return result
     
     def blink(self, blinks_left, stone):
         if blinks_left == 0:
-            return [stone]
+            return 1
         
         cache_key = (stone, blinks_left)
         if cache_key in self.cache:
@@ -42,11 +45,9 @@ class Memoizer:
                 right_stone = int(stone_label[length//2:])
                 left_stones = self.blink(blinks_left-1, left_stone)
                 right_stones = self.blink(blinks_left-1, right_stone)
-                return_value = [stone for stone in left_stones]
-                return_value.extend(right_stones)
+                return_value = left_stones + right_stones
             else:
                 return_value = self.blink(blinks_left-1, stone*2024)
-
         self.cache[cache_key] = return_value
         return return_value
 
@@ -97,20 +98,19 @@ def main(arguments):
             line = input_file.readline()
             stones = [int(s) for s in line.split(' ')]            
 
-    time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
         if 'a' in section:
             scenarios.append(25)
         if 'b' in section:
             scenarios.append(75)
-        for scenario in scenarios:    
-            print(f'Processing {stones}')
-            final_stones = memo.execute_blinks(scenario, stones)
-            print(f'after {scenario} blinks, there were {len(final_stones)} stones')
-
-    time_end = process_time()
-    print(f'Time taken: {time_end - time_start} seconds.')
+    for scenario in scenarios:    
+        print(f'Processing {stones} in {scenario} blinks')
+        time_start = process_time()
+        final_stones = memo.execute_blinks(scenario, stones)
+        print(f'after {scenario} blinks, there were {final_stones} stones')
+        time_end = process_time()
+        print(f'Time taken: {time_end - time_start} seconds.')
 
     return
 
