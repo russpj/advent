@@ -12,6 +12,31 @@ from time import process_time
 app_name = 'stones.py'
 
 
+class Memoizer:
+    def __init__(self):
+        self.cache = {}
+        return
+    
+    def blink(self, blinks_left, stone):
+        if blinks_left == 0:
+            return [stone]
+        
+        if stone == 0:
+            return self.blink(blinks_left-1, 1)
+        
+        stone_label = str(stone)
+        length = len(stone_label)
+        if length % 2 == 0:
+            left_stone = int(stone_label[:length//2])
+            right_stone = int(stone_label[length//2:])
+            left_stones = self.blink(blinks_left-1, left_stone)
+            right_stones = self.blink(blinks_left-1, right_stone)
+            left_stones.extend(right_stones)
+            return left_stones
+        
+        return self.blink(blinks_left-1, stone*2024)
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -39,6 +64,12 @@ def main(arguments):
         if opt in ('-s', '--section'):
             for section in arg:
                 sections.append(section)
+
+    if verbose:
+        memo = Memoizer()
+        tests = [(0, 1), (1, 1), (45, 1), (101, 1)]
+        for test in tests:
+            print(f'{test[0]} becomes {memo.blink(test[1], test[0])}')
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
