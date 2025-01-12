@@ -17,6 +17,7 @@ class Garden:
         self.positions = set()
         self.area = 0
         self.perimeter = 0
+        self.sides = 0
         return
     
     def add_grid(self, position):
@@ -122,14 +123,19 @@ def main(arguments):
     time_start = process_time()
     if verbose:
         gardens.print_grid()
+    gardens.find_gardens()
     for section in sections:
         print(f'Processing section {section}')
         if 'a' in section:
-            gardens.find_gardens()
             cost = 0
             for garden in gardens.gardens:
                 cost += garden.area*garden.perimeter
-            print (f'The total cost is {cost}.')
+            print (f'The total cost (by perimeter) is {cost}.')
+        if 'b' in section:
+            cost = 0
+            for garden in gardens.gardens:
+                cost += garden.area*garden.sides
+            print (f'The total cost (by sides) is {cost}.')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
