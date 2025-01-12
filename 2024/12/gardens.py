@@ -7,6 +7,7 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
+from enum import Enum
 
 
 app_name = 'gardens.py'
@@ -20,9 +21,18 @@ class Garden:
         self.sides = 0
         return
     
-    def add_grid(self, position):
-        self.positions.append(position)
-        return
+    def calculate_sides(self):
+        self.sides = 0
+
+    def update_perimeter(self, direction):
+        self.perimeter += 1
+
+
+class Direction(Enum):
+    up = 0
+    down = 1
+    left = 2
+    right = 3
 
 
 class Gardens:
@@ -46,24 +56,24 @@ class Gardens:
     def new_positions(self, position):
         row = position[0]
         col = position[1]
-        yield (row-1, col) if row > 0 else ()
-        yield (row+1, col) if row < self.num_rows-1 else ()
-        yield (row, col-1) if col > 0 else ()
-        yield (row, col+1) if col < self.num_cols-1 else ()
+        yield ((row-1, col), Direction.up) if row > 0 else ((), Direction.up)
+        yield ((row+1, col), Direction.down) if row < self.num_rows-1 else ((), Direction.down)
+        yield ((row, col-1), Direction.left) if col > 0 else ((), Direction.left)
+        yield ((row, col+1), Direction.right) if col < self.num_cols-1 else ((), Direction.right)
 
     def find_rest_of_garden(self, garden, position):
         if position not in garden.positions:
             garden.positions.add(position)
             self.placed_positions.add(position)
             garden.area += 1
-            for new_position in self.new_positions(position):
+            for new_position, direction in self.new_positions(position):
                 if new_position:
                     if self.grid[new_position[0]][new_position[1]] == garden.vegetable:
                         self.find_rest_of_garden(garden, new_position)
                     else:
-                        garden.perimeter += 1
+                        garden.update_perimeter(direction)
                 else:
-                    garden.perimeter += 1
+                    garden.update_perimeter(direction)
         return        
     
     def find_gardens(self):
@@ -74,9 +84,9 @@ class Gardens:
                 if ((row, col)) not in self.placed_positions:
                     garden = Garden(self.grid[row][col])
                     self.find_rest_of_garden(garden, ((row, col)))
+                    garden.calculate_sides()
                     self.gardens.append(garden)
                     
-    
     def print_grid(self):
         for grid_row in self.grid:
             for vegetable in grid_row:
