@@ -25,8 +25,17 @@ class Garden:
     def calculate_sides(self):
         self.sides = 0
 
-    def update_perimeter(self, direction):
+    def update_perimeter(self, position, direction):
         self.perimeter += 1
+        if direction == Direction.up:
+            self.horizontal_edges.append((position[0]-1, position[1]))
+        elif direction == Direction.down:
+            self.horizontal_edges.append((position[0], position[1]))
+        elif direction == Direction.left:
+            self.vertical_edges.append((position[0], position[1]-1))
+        elif direction == Direction.right:
+            self.vertical_edges.append((position[0], position[1]))
+        return
 
 
 class Direction(Enum):
@@ -71,9 +80,9 @@ class Gardens:
                     if self.grid[new_position[0]][new_position[1]] == garden.vegetable:
                         self.find_rest_of_garden(garden, new_position)
                     else:
-                        garden.update_perimeter(direction)
+                        garden.update_perimeter(position, direction)
                 else:
-                    garden.update_perimeter(direction)
+                    garden.update_perimeter(position, direction)
         return        
     
     def find_gardens(self):
