@@ -15,7 +15,8 @@ app_name = 'gardens.py'
 class Garden:
     def __init__(self, vegetable):
         self.vegetable = vegetable
-        self.positions = set()
+        self.horizontal_edges = []
+        self.vertical_edges = []
         self.area = 0
         self.perimeter = 0
         self.sides = 0
@@ -62,8 +63,7 @@ class Gardens:
         yield ((row, col+1), Direction.right) if col < self.num_cols-1 else ((), Direction.right)
 
     def find_rest_of_garden(self, garden, position):
-        if position not in garden.positions:
-            garden.positions.add(position)
+        if position not in self.placed_positions:
             self.placed_positions.add(position)
             garden.area += 1
             for new_position, direction in self.new_positions(position):
