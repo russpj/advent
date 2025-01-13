@@ -28,13 +28,18 @@ class Garden:
     def update_perimeter(self, position, direction):
         self.perimeter += 1
         if direction == Direction.up:
-            self.horizontal_edges.append((position[0]-1, position[1]))
-        elif direction == Direction.down:
             self.horizontal_edges.append((position[0], position[1]))
+        elif direction == Direction.down:
+            self.horizontal_edges.append((position[0]+1, position[1]))
         elif direction == Direction.left:
-            self.vertical_edges.append((position[0], position[1]-1))
-        elif direction == Direction.right:
             self.vertical_edges.append((position[0], position[1]))
+        elif direction == Direction.right:
+            self.vertical_edges.append((position[0], position[1]+1))
+        return
+
+    def calculate_sides(self):
+        self.horizontal_edges.sort()
+        self.vertical_edges.sort(key = lambda p: (p[1], p[0]))
         return
 
 
