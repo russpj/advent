@@ -28,18 +28,35 @@ class Garden:
     def update_perimeter(self, position, direction):
         self.perimeter += 1
         if direction == Direction.up:
-            self.horizontal_edges.append((position[0], position[1]))
+            self.horizontal_edges.append((position[0], position[1], direction))
         elif direction == Direction.down:
-            self.horizontal_edges.append((position[0]+1, position[1]))
+            self.horizontal_edges.append((position[0]+1, position[1], direction))
         elif direction == Direction.left:
-            self.vertical_edges.append((position[0], position[1]))
+            self.vertical_edges.append((position[0], position[1], direction))
         elif direction == Direction.right:
-            self.vertical_edges.append((position[0], position[1]+1))
+            self.vertical_edges.append((position[0], position[1]+1, direction))
         return
 
     def calculate_sides(self):
         self.horizontal_edges.sort()
+        horizontal_sides = 0
+        row = -1
+        col = -1
+        direction = Direction.right
+        for edge in self.horizontal_edges:
+            if edge[0] != row or edge[1] != col+1 or edge[2] != direction:
+                horizontal_sides += 1
+            (row, col, direction) = edge
         self.vertical_edges.sort(key = lambda p: (p[1], p[0]))
+        vertical_sides = 0
+        row = -1
+        col = -1
+        direction = Direction.right
+        for edge in self.vertical_edges:
+            if edge[1] != col or edge[0] != row+1 or edge[2] != direction:
+                vertical_sides += 1
+            (row, col, direction) = edge
+        self.sides = horizontal_sides + vertical_sides
         return
 
 
@@ -101,12 +118,20 @@ class Gardens:
                     garden.calculate_sides()
                     self.gardens.append(garden)
                     
-    def print_grid(self):
+    def print_grid(self, vegetable_match=None):
         for grid_row in self.grid:
             for vegetable in grid_row:
-                print(vegetable, end='')
+                if not vegetable_match or vegetable_match==vegetable:
+                    print(vegetable, end='')
+                else:
+                    print('.', end='')
             print()
         return
+    
+    def print_gardens(self, vegetable=None):
+        for garden in self.gardens:
+            if not vegetable or vegetable==garden.vegetable:
+                print(f'{garden.vegetable} - area:{garden.area}, perimeter:{garden.perimeter}, sides:{garden.sides}')
 
 
 def main(arguments):
@@ -145,8 +170,6 @@ def main(arguments):
             gardens.read_file(input_file)
 
     time_start = process_time()
-    if verbose:
-        gardens.print_grid()
     gardens.find_gardens()
     for section in sections:
         print(f'Processing section {section}')
@@ -160,6 +183,10 @@ def main(arguments):
             for garden in gardens.gardens:
                 cost += garden.area*garden.sides
             print (f'The total cost (by sides) is {cost}.')
+    if verbose:
+        for vegetable in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            gardens.print_grid(vegetable)
+            gardens.print_gardens(vegetable)
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
