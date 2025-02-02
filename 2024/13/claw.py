@@ -65,6 +65,14 @@ def find_solutions(claw):
     return sorted(solutions)
 
 
+def adjust_claw_goals(claws, adjustment):
+    new_claws = []
+    for claw in claws:
+        new_goal = (claw.goal[0]+adjustment, claw.goal[1]+adjustment)
+        new_claws.append(Claw(claw.button_a, claw.button_b, new_goal))
+    return new_claws
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -118,6 +126,8 @@ def main(arguments):
                     if verbose:
                         print('  No Solutions')
             print(f'The minimum cost to get {prize_count} prizes is {cost}.')
+        if section == 'b':
+            long_claws = adjust_claw_goals(claws, 10000000000000)
 
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
