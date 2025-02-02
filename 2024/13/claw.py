@@ -47,9 +47,22 @@ def parse_claws(file):
     return claws
 
 
+def score(solution):
+    return 3*solution[0] + solution[1]
+
 def find_solutions(claw):
     solutions = []
-    return solutions
+    a = 0
+    while True:
+        b = (claw.goal[0] - a*claw.button_a[0])//claw.button_b[0]
+        if b < 0:
+            break
+        if a*claw.button_a[0] + b*claw.button_b[0] == claw.goal[0]:
+            if a*claw.button_a[1] + b*claw.button_b[1] == claw.goal[1]:
+                solutions.append((score((a,b)), a, b))
+        a += 1
+    
+    return sorted(solutions)
 
 
 def main(arguments):
