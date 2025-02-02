@@ -102,13 +102,22 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
+            cost = 0
+            prize_count = 0
             for claw in claws:
                 if verbose:
                     print('Finding solutions for:')
                     claw.print()
                 solutions = find_solutions(claw)
-                if verbose:
-                    print(solutions)
+                if solutions:
+                    if verbose:
+                        print(solutions)
+                    cost += solutions[0][0]
+                    prize_count += 1
+                else:
+                    if verbose:
+                        print('  No Solutions')
+            print(f'The minimum cost to get {prize_count} prizes is {cost}.')
 
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
