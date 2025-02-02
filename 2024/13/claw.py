@@ -104,30 +104,31 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
-            claws = parse_claws(input_file)
+            original_claws = parse_claws(input_file)
 
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
-            cost = 0
-            prize_count = 0
-            for claw in claws:
-                if verbose:
-                    print('Finding solutions for:')
-                    claw.print()
-                solutions = find_solutions(claw)
-                if solutions:
-                    if verbose:
-                        print(solutions)
-                    cost += solutions[0][0]
-                    prize_count += 1
-                else:
-                    if verbose:
-                        print('  No Solutions')
-            print(f'The minimum cost to get {prize_count} prizes is {cost}.')
+            claws = original_claws
         if section == 'b':
-            long_claws = adjust_claw_goals(claws, 10000000000000)
+            claws = adjust_claw_goals(original_claws, 10000000000000)
+        cost = 0
+        prize_count = 0
+        for claw in claws:
+            if verbose:
+                print('Finding solutions for:')
+                claw.print()
+            solutions = find_solutions(claw)
+            if solutions:
+                if verbose:
+                    print(solutions)
+                cost += solutions[0][0]
+                prize_count += 1
+            else:
+                if verbose:
+                    print('  No Solutions')
+        print(f'The minimum cost to get {prize_count} prizes is {cost}.')
 
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
