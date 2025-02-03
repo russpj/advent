@@ -50,6 +50,7 @@ def parse_claws(file):
 def score(solution):
     return 3*solution[0] + solution[1]
 
+
 def find_solutions(claw):
     solutions = []
     a = 0
@@ -61,8 +62,30 @@ def find_solutions(claw):
             if a*claw.button_a[1] + b*claw.button_b[1] == claw.goal[1]:
                 solutions.append((score((a,b)), a, b))
         a += 1
-    
     return sorted(solutions)
+
+def find_solution(claw):
+    scales = (claw.button_a[1], claw.button_a[0])
+    scaled_button_a = (claw.button_a[0]*scales[0], \
+                       claw.button_a[1]*scales[1])
+    scaled_button_b = (claw.button_b[0]*scales[0], \
+                       claw.button_b[1]*scales[1])
+    scaled_goals = (claw.goal[0]*scales[0], \
+                   claw.goal[1]*scales[1])
+    scaled_b = scaled_button_b[0] - scaled_button_b[1]
+    scaled_goal = scaled_goals[0] - scaled_goals[1]
+    if scaled_b != 0:
+        b = scaled_goal//scaled_b
+        a = (scaled_goals[0] - scaled_button_b[0]*b)//scaled_button_a[0]
+        if a <= 0 or b <= 0:
+            return []
+        if a*claw.button_a[0] + b*claw.button_b[0] == claw.goal[0] and \
+           a*claw.button_a[1] + b*claw.button_b[1] == claw.goal[1]:
+            return [(score((a, b)), a, b)]
+        else:
+            return []
+    else:
+        return[]
 
 
 def adjust_claw_goals(claws, adjustment):
@@ -119,7 +142,7 @@ def main(arguments):
             if verbose:
                 print('Finding solutions for:')
                 claw.print()
-            solutions = find_solutions(claw)
+            solutions = find_solution(claw)
             if solutions:
                 if verbose:
                     print(solutions)
