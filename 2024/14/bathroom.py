@@ -35,13 +35,24 @@ class Floor:
                 robot_counts[location] += 1
             else:
                 robot_counts[location] = 1
-        for col in range(self.num_cols):
-            for row in range(self.num_rows):
+        for row in range(self.num_rows):
+            for col in range(self.num_cols):
                 if (col, row) in robot_counts:
                     print(robot_counts[(col, row)], end='')
                 else:
                     print('.', end='')
             print()
+        return
+    
+    def move_robots(self, moves):
+        for robot in self.robots:
+            pos = list(robot.pos)
+            vel = robot.vel
+            size = (self.num_cols, self.num_rows)
+            for index in range(2):
+                pos[index] += vel[index]*moves
+                pos[index] = pos[index] % size[index]
+            robot.pos = pos
         return
 
 
@@ -100,6 +111,10 @@ def main(arguments):
         if section == 'a':
             floor = Floor(floor_size[0], floor_size[1], robots.copy())
             if verbose:
+                floor.print()
+            floor.move_robots(100)
+            if verbose:
+                print(f'After {100} moves:')
                 floor.print()
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
