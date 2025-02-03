@@ -7,9 +7,29 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
+from re import findall
 
 
 app_name = 'bathroom.py'
+
+
+class Robot:
+    def __init__(self, pos, vel):
+        self.pos = pos
+        self.vel = vel
+        return
+
+
+def parse_robots(file):
+    robots = []
+    robot_exp = r'p=(-?\d*),(-?\d*) v=(-?\d*),(-?\d*)'    
+    for line in file:
+        matches = findall(robot_exp, line)
+        if matches:
+            pos = [int(val) for val in matches[0][0:2]]
+            vel = [int(val) for val in matches[0][2:4]]
+            robots.append(Robot(pos, vel))
+    return robots
 
 
 def main(arguments):
@@ -43,6 +63,7 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            robots = parse_robots(input_file)
 
     time_start = process_time()
     for section in sections:
