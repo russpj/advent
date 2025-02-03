@@ -15,8 +15,33 @@ app_name = 'bathroom.py'
 
 class Robot:
     def __init__(self, pos, vel):
-        self.pos = pos
-        self.vel = vel
+        self.pos = list(pos)
+        self.vel = list(vel)
+        return
+    
+
+class Floor:
+    def __init__(self, num_cols, num_rows, robots):
+        self.num_cols = num_cols
+        self.num_rows = num_rows
+        self.robots = robots
+        return
+    
+    def print(self):
+        robot_counts = {}
+        for robot in self.robots:
+            location = tuple(robot.pos)
+            if location in robot_counts:
+                robot_counts[location] += 1
+            else:
+                robot_counts[location] = 1
+        for col in range(self.num_cols):
+            for row in range(self.num_rows):
+                if (col, row) in robot_counts:
+                    print(robot_counts[(col, row)], end='')
+                else:
+                    print('.', end='')
+            print()
         return
 
 
@@ -65,11 +90,17 @@ def main(arguments):
             print(f'Opened {input_file_name} for {app_name}')
             robots = parse_robots(input_file)
 
+    grid_size = {'test.txt': (11, 7), 'input.txt': (101, 103)}
+
+    floor_size = grid_size[input_file_name]
+
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
-    if verbose:
-        print('Debugging output goes here')
+        if section == 'a':
+            floor = Floor(floor_size[0], floor_size[1], robots.copy())
+            if verbose:
+                floor.print()
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
