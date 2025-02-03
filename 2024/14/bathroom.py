@@ -54,6 +54,24 @@ class Floor:
                 pos[index] = pos[index] % size[index]
             robot.pos = pos
         return
+    
+    def score_robots(self):
+        score_by_quads = [[0, 0], [0, 0]]
+        mids = (self.num_cols//2, self.num_rows//2)
+        quad_pos = [0, 0]
+        for robot in self.robots:
+            ignore = False
+            for index in range(2):
+                if robot.pos[index] == mids[index]:
+                    ignore = True
+                quad_pos[index] = 0 if robot.pos[index] < mids[index] else 1
+            if not ignore:
+                score_by_quads[quad_pos[0]][quad_pos[1]] += 1
+        score = 1
+        for row_quad in range(2):
+            for col_quad in range(2):
+                score = score*score_by_quads[col_quad][row_quad]
+        return score
 
 
 def parse_robots(file):
@@ -116,6 +134,7 @@ def main(arguments):
             if verbose:
                 print(f'After {100} moves:')
                 floor.print()
+            print(f'The safety factor is {floor.score_robots()}')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
