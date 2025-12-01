@@ -25,8 +25,9 @@ class Dial:
         self.pos = self.pos%self.limit
 
     def parse(self, instruction):
-        return ("R", 0)
-
+        direction = instruction[0]
+        amount = int(instruction[1:])
+        return (direction, amount)
 
 def test(dial, expected):
     if dial.pos != expected:
