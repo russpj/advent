@@ -30,7 +30,12 @@ class Dial:
         return (direction, amount)
     
     def count_positions(self, instructions, pos):
-        return 0
+        count_pos = 0
+        for instruction in instructions:
+            self.move_dial(instruction)
+            if self.pos == pos:
+                count_pos +=1
+        return count_pos
 
 def test(dial, expected):
     if dial.pos != expected:
@@ -42,7 +47,6 @@ def main(arguments):
     verbose = False
     input_file_name = ''
     sections = []
-    instructions = []
 
     try:
         opts, args = getopt(arguments, "hvs:f:", ("help", "verbose", "section=", "file="))
@@ -79,7 +83,7 @@ def main(arguments):
                     test_position = 0
                     count = dial.count_positions(input_file, test_position)
                     print(f'We found the {test_position} position {count} times')
-                    
+
     if verbose:
         print('Debugging output goes here')
         print('Running some tests')
