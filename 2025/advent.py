@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # advent
-'''Advent of code template'''
+'''Advent of code (2025) template'''
 
 
 from sys import stdin, stdout, stderr, argv
