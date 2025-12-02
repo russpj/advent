@@ -33,7 +33,6 @@ class Dial:
                 if new_pos <= pos_click < self.pos:
                     pass_click = True
             else:
-                new_pos = self.pos - amount + self.limit
                 if pos_click < self.pos or new_pos <= pos_click:
                     pass_click = True
         else:
