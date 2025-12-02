@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # advent
-'''Advent of code (2025) template'''
+'''Advent of code (2025) Day 02 - Product ID Validation'''
 
 
 from sys import stdin, stdout, stderr, argv
@@ -9,7 +9,7 @@ from getopt import getopt, GetoptError
 from time import process_time
 
 
-app_name = 'advent.py'
+app_name = 'idvalidation.py'
 
 
 def main(arguments):
