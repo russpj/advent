@@ -24,28 +24,22 @@ class Dial:
         self.pos += amount
         self.pos = self.pos%self.limit
 
-    def move_dial_clicks(self, instruction, pos_click):
-        pass_click = False
+    def move_dial_clicks(self, instruction):
+        pass_click = 0
         direction, amount = self.parse(instruction)
+        pass_click += amount//self.limit
+
         if direction == 'L':
             new_pos = (self.pos - amount)%self.limit
-            if new_pos < self.pos:
-                if new_pos <= pos_click < self.pos:
-                    pass_click = True
-            else:
-                if pos_click < self.pos or new_pos <= pos_click:
-                    pass_click = True
+            if ((new_pos > self.pos and self.pos != 0) or new_pos==0):
+                pass_click += 1
         else:
             new_pos = (self.pos+amount)%self.limit
-            if new_pos > self.pos:
-                if self.pos < pos_click <= new_pos:
-                    pass_click = True
-            else:
-                if self.pos < pos_click or pos_click <= new_pos:
-                    pass_click = True
+            if (new_pos < self.pos):
+                pass_click += 1
                         
         self.pos = new_pos
-        return 1 if pass_click else 0
+        return pass_click
 
     def parse(self, instruction):
         direction = instruction[0]
@@ -63,8 +57,7 @@ class Dial:
     def count_clicks(self, instructions, pos_pass):
         clicks_count = 0
         for instruction in instructions:
-            pos_current = self.pos
-            clicks_count += self.move_dial_clicks(instruction, pos_pass)
+            clicks_count += self.move_dial_clicks(instruction)
         return clicks_count
     
 
@@ -100,13 +93,11 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
-
-
     time_start = process_time()
-    dial = Dial(50, 100)
 
     for section in sections:
         print(f'Processing section {section}')
+        dial = Dial(50, 100)
         test_position = 0
         if section == 'a':
             if input_file_name:
@@ -117,12 +108,14 @@ def main(arguments):
 
         if section == 'b':
             if input_file_name:
+                dial = Dial(50, 100)
                 with open(input_file_name, 'r') as input_file:
                     print(f'Opened {input_file_name} for {app_name}')
                     count = dial.count_clicks(input_file, test_position)
                     print(f'We passed the {test_position} position {count} times')
 
     if verbose:
+        dial = Dial(50, 100)
         print('Debugging output goes here')
         print('Running some tests')
         test(dial, 50)
