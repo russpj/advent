@@ -12,15 +12,13 @@ from time import process_time
 app_name = 'idvalidation.py'
 
 
-def add_invalid_ids(pair, copies):
+def add_invalid_ids(lower, upper, copies):
     sum_of_invalid_ids = 0
-    nums = pair.split('-')
-    lower = int(nums[0])
-    upper = int(nums[1])
-    seed = nums[0][0:len(nums[0])//copies]
+    seed = str(lower)
+    seed = seed[:len(seed)//copies]
     if not seed:
         seed = '0'
-    test = int(2*seed)
+    test = int(copies*seed)
     while test <= upper:
         if test >= lower:
             sum_of_invalid_ids += test
@@ -69,7 +67,15 @@ def main(arguments):
         if section == 'a':
             sum_of_invalid_ids = 0
             for pair in pairs.split(','):
-                sum_of_invalid_ids += add_invalid_ids(pair, 2)
+                lower, upper = pair.split('-')
+                sum_of_invalid_ids += add_invalid_ids(int(lower), int(upper), 2)
+            print (f'the invalid IDs added up to {sum_of_invalid_ids}')
+
+        if section == 'b':
+            sum_of_invalid_ids = 0
+            for pair in pairs.split(','):
+                lower, upper = pair.split('-')
+                sum_of_invalid_ids += add_invalid_ids(int(lower), int(upper), 2)
             print (f'the invalid IDs added up to {sum_of_invalid_ids}')
 
     if verbose:
