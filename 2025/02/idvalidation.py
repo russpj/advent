@@ -11,6 +11,9 @@ from time import process_time
 
 app_name = 'idvalidation.py'
 
+def count_invalid_ids(pair):
+    return 0
+
 
 def main(arguments):
     program_name = app_name
@@ -18,6 +21,7 @@ def main(arguments):
     verbose = False
     input_file_name = ''
     sections = []
+    pairs = ''
 
     try:
         opts, args = getopt(arguments, "hvs:f:", ("help", "verbose", "section=", "file="))
@@ -43,10 +47,17 @@ def main(arguments):
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            pairs = input_file.readline()
 
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            count_of_invalid_ids = 0
+            for pair in pairs.split(','):
+                count_of_invalid_ids += count_invalid_ids(pair)
+            print (f'{count_of_invalid_ids} invalid ids were found')
+
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
