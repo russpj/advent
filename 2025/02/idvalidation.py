@@ -11,8 +11,20 @@ from time import process_time
 
 app_name = 'idvalidation.py'
 
-def count_invalid_ids(pair):
-    return 0
+
+def add_invalid_ids(pair):
+    sum_of_invalid_ids = 0
+    nums = pair.split('-')
+    lower = int(nums[0])
+    upper = int(nums[1])
+    seed = nums[0][0:len(nums[0])//2]
+    test = int(2*seed)
+    while test <= upper:
+        if test >= lower:
+            sum_of_invalid_ids += test
+        seed = str(int(seed)+1)
+        test = int(2*seed)
+    return sum_of_invalid_ids
 
 
 def main(arguments):
@@ -53,10 +65,10 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
-            count_of_invalid_ids = 0
+            sum_of_invalid_ids = 0
             for pair in pairs.split(','):
-                count_of_invalid_ids += count_invalid_ids(pair)
-            print (f'{count_of_invalid_ids} invalid ids were found')
+                sum_of_invalid_ids += add_invalid_ids(pair)
+            print (f'the invalid IDs added up to {sum_of_invalid_ids}')
 
     if verbose:
         print('Debugging output goes here')
