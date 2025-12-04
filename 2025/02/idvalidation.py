@@ -18,6 +18,8 @@ def add_invalid_ids(pair):
     lower = int(nums[0])
     upper = int(nums[1])
     seed = nums[0][0:len(nums[0])//2]
+    if not seed:
+        seed = '0'
     test = int(2*seed)
     while test <= upper:
         if test >= lower:
