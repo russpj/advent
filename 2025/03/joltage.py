@@ -12,6 +12,25 @@ from time import process_time
 app_name = 'joltage.py'
 
 
+def maximize_joltage_two_pass(battery):
+    max_joltage_first = 0
+    first_cell = 0
+    for cell in range(len(battery)):
+        if int(battery[cell]) > max_joltage_first:
+            first_cell = cell
+            max_joltage_first = int(battery[first_cell])
+
+    max_joltage_second = 0
+    second_cell = first_cell+1
+    for cell in range(first_cell+1, len(battery)):
+        if int(battery[cell]) > max_joltage_second:
+            second_cell = cell
+            max_joltage_second = int(battery[second_cell])
+
+    return max_joltage_first*10 + max_joltage_second
+
+
+
 def maximize_joltage(battery, num_cells):
     picked_cells = list(range(num_cells))
 
@@ -67,16 +86,19 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
-            joltage = 0
+            total_joltage = 0
             if input_file_name:
                 with open(input_file_name, 'r') as input_file:
                     print(f'Opened {input_file_name} for {app_name}')
                     for battery in input_file:
-                        joltage += maximize_joltage(battery.strip(), 2)
-            print(f'the highest voltage we can get is {joltage}')
+                        joltage = maximize_joltage(battery.strip(), 2)
+                        total_joltage += joltage
+                        if verbose:
+                            other_joltage = maximize_joltage_two_pass(battery.strip())
+                            if joltage != other_joltage:
+                                print(f'{battery} gets {joltage} and {other_joltage}')
+            print(f'the highest voltage we can get is {total_joltage}')
 
-    if verbose:
-        print('Debugging output goes here')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
