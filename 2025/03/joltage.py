@@ -15,7 +15,7 @@ app_name = 'joltage.py'
 def maximize_joltage_two_pass(battery):
     max_joltage_first = 0
     first_cell = 0
-    for cell in range(len(battery)):
+    for cell in range(len(battery)-1):
         if int(battery[cell]) > max_joltage_first:
             first_cell = cell
             max_joltage_first = int(battery[first_cell])
@@ -34,8 +34,7 @@ def maximize_joltage_two_pass(battery):
 def maximize_joltage(battery, num_cells):
     picked_cells = list(range(num_cells))
 
-    next_cell = num_cells
-    while next_cell < len(battery):
+    for next_cell in range(1, len(battery)):
         next_cell_value = battery[next_cell]
         for voltage_cell in range(num_cells):
             if next_cell+num_cells-voltage_cell <= len(battery):
@@ -43,9 +42,7 @@ def maximize_joltage(battery, num_cells):
                     picked_cells[voltage_cell] = next_cell
                     for increment in range(voltage_cell+1, num_cells):
                         picked_cells[increment] = picked_cells[increment-1]+1
-                        next_cell = picked_cells[increment]
                     break;
-        next_cell += 1
 
     joltage = 0
     for index in picked_cells:
