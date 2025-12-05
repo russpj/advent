@@ -13,7 +13,13 @@ app_name = 'joltage.py'
 
 
 def maximize_joltage(battery, num_cells):
-    return 0
+    indices = list(range(num_cells))
+
+    joltage = 0
+    for index in indices:
+        joltage *= 10
+        joltage += int(battery[index])
+    return joltage
 
 
 def main(arguments):
