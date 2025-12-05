@@ -12,6 +12,34 @@ from time import process_time
 app_name = 'joltage.py'
 
 
+def find_highest_cell(candidates, min, max):
+    highest_cell = min
+    for cell in range(min, max):
+        if candidates[cell] > candidates[highest_cell]:
+            highest_cell = cell
+    return highest_cell
+
+
+def maximize_joltage_n_pass(candidates, num_cells):
+    cell_indices = []
+
+    for cell_index in range(num_cells):
+        if cell_indices:
+            min = cell_indices[-1]+1
+        else:
+            min = 0
+
+        cell_highest = find_highest_cell(candidates, min, len(candidates)-num_cells+cell_index+1)
+        cell_indices.append(cell_highest)
+
+    joltage = 0
+    for cell in cell_indices:
+        joltage *= 10
+        joltage += int(candidates[cell])
+
+    return joltage
+
+
 def maximize_joltage_two_pass(battery):
     max_joltage_first = 0
     first_cell = 0
@@ -28,7 +56,6 @@ def maximize_joltage_two_pass(battery):
             max_joltage_second = int(battery[second_cell])
 
     return max_joltage_first*10 + max_joltage_second
-
 
 
 def maximize_joltage(battery, num_cells):
@@ -91,9 +118,21 @@ def main(arguments):
                         joltage = maximize_joltage(battery.strip(), 2)
                         total_joltage += joltage
                         if verbose:
-                            other_joltage = maximize_joltage_two_pass(battery.strip())
+                            other_joltage = maximize_joltage_n_pass(battery.strip(), 2)
                             if joltage != other_joltage:
                                 print(f'{battery} gets {joltage} and {other_joltage}')
+            print(f'the highest voltage we can get is {total_joltage}')
+
+        if section == 'b':
+            total_joltage = 0
+            if input_file_name:
+                with open(input_file_name, 'r') as input_file:
+                    print(f'Opened {input_file_name} for {app_name}')
+                    for battery in input_file:
+                        joltage = maximize_joltage_n_pass(battery.strip(), 12)
+                        total_joltage += joltage
+                        if verbose:
+                            print(f'{joltage}')
             print(f'the highest voltage we can get is {total_joltage}')
 
     time_end = process_time()
