@@ -12,6 +12,10 @@ from time import process_time
 app_name = 'joltage.py'
 
 
+def maximize_joltage(battery, num_cells):
+    return 0
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -40,13 +44,18 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
-    if input_file_name:
-        with open(input_file_name, 'r') as input_file:
-            print(f'Opened {input_file_name} for {app_name}')
-
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            joltage = 0
+            if input_file_name:
+                with open(input_file_name, 'r') as input_file:
+                    print(f'Opened {input_file_name} for {app_name}')
+                    for battery in input_file:
+                        joltage += maximize_joltage(battery.strip(), 2)
+            print(f'the highest voltage we can get is {joltage}')
+
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
