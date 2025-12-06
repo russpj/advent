@@ -24,12 +24,14 @@ def count_rolls(floor, row_roll, col_roll):
 
 
 def count_movable_rolls(floor, threshold):
-    movable_rolls = 0
+    count_of_rolls = 0
+    moveable_rolls = set()
     for row in range(len(floor)):
         for col in range(len(floor[row])):
             if floor[row][col] == '@' and count_rolls(floor, row, col) < threshold:
-                movable_rolls += 1
-    return movable_rolls
+                count_of_rolls += 1
+                moveable_rolls.add((row, col))
+    return (count_of_rolls, moveable_rolls)
 
 
 def main(arguments):
@@ -71,7 +73,7 @@ def main(arguments):
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
-            moveable_rolls = count_movable_rolls(floor, 4)
+            moveable_rolls, _ = count_movable_rolls(floor, 4)
             print(f'{moveable_rolls} rolls are moveable')
 
     if verbose:
