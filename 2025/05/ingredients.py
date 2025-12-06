@@ -12,6 +12,10 @@ from time import process_time
 app_name = 'ingredients.py'
 
 
+def in_range(item, ranges):
+    return False
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -40,13 +44,33 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+    fresh_ranges = []
+    ingredients_to_test = []
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             print(f'Opened {input_file_name} for {app_name}')
+            reading_ranges = True
+            for line in input_file:
+                line = line.strip()
+                if reading_ranges:
+                    if line:
+                        first, last = line.split('-')
+                        fresh_ranges.append((int(first), int(last)))
+                    else:
+                        reading_ranges = False
+                else:
+                    ingredients_to_test.append(int(line))
 
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            count_of_fresh_ingredients = 0
+            for ingredient in ingredients_to_test:
+                if in_range(ingredient, fresh_ranges):
+                    count_of_fresh_ingredients += 1
+            print(f'{count_of_fresh_ingredients} of the ingredients were fresh')
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
