@@ -26,6 +26,20 @@ def read_problems(file):
     return problems
 
 
+def read_cephalopod_problems(file):
+    lines = []
+    for line in file:
+        lines.append(line.split())
+
+    problems = []
+    for problem_index in range(len(lines[0])):
+        problem = []
+        for line in lines:
+            problem.append(line[problem_index])
+        problems.append(problem)
+    return problems
+
+
 def solve_problem(problem):
     arguments = problem[:-1]
     operator = problem[-1]
@@ -70,12 +84,11 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
-    problems = []
-
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
+            problems = []
             if input_file_name:
                 with open(input_file_name, 'r') as input_file:
                     if verbose:
@@ -87,11 +100,12 @@ def main(arguments):
             print(f'the grand total is {grand_total}')
 
         if section == 'b':
+            problems = []
             if input_file_name:
                 with open(input_file_name, 'r') as input_file:
                     if verbose:
                         print(f'Opened {input_file_name} for {app_name}')
-                    problems = read_problems(input_file)
+                    problems = read_cephalopod_problems(input_file)
             grand_total = 0
             for problem in problems:
                 grand_total += solve_problem(problem)
