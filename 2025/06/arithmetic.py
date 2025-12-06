@@ -81,7 +81,17 @@ def main(arguments):
                     if verbose:
                         print(f'Opened {input_file_name} for {app_name}')
                     problems = read_problems(input_file)
+            grand_total = 0
+            for problem in problems:
+                grand_total += solve_problem(problem)
+            print(f'the grand total is {grand_total}')
 
+        if section == 'b':
+            if input_file_name:
+                with open(input_file_name, 'r') as input_file:
+                    if verbose:
+                        print(f'Opened {input_file_name} for {app_name}')
+                    problems = read_problems(input_file)
             grand_total = 0
             for problem in problems:
                 grand_total += solve_problem(problem)
