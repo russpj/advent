@@ -26,6 +26,22 @@ def read_problems(file):
     return problems
 
 
+def solve_problem(problem):
+    arguments = problem[:-1]
+    operator = problem[-1]
+    if operator == '+':
+        total = 0
+        for argument in arguments:
+            total += int(argument)
+        return total
+    if operator == '*':
+        product = 1
+        for argument in arguments:
+            product *= int(argument)
+        return product
+    return 0
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -65,6 +81,12 @@ def main(arguments):
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
+        if section == 'a':
+            grand_total = 0
+            for problem in problems:
+                grand_total += solve_problem(problem)
+            print(f'the grand total is {grand_total}')
+
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
