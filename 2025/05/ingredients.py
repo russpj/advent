@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-# advent
-'''Advent of code (2025) template'''
+# ingredients
+'''Advent of code (2025) 05 - testing ingredients'''
 
 
 from sys import stdin, stdout, stderr, argv
@@ -9,7 +9,7 @@ from getopt import getopt, GetoptError
 from time import process_time
 
 
-app_name = 'advent.py'
+app_name = 'ingredients.py'
 
 
 def main(arguments):
