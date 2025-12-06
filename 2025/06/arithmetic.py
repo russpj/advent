@@ -12,6 +12,20 @@ from time import process_time
 app_name = 'arithmetic.py'
 
 
+def read_problems(file):
+    lines = []
+    for line in file:
+        lines.append(line.split())
+
+    problems = []
+    for problem_index in range(len(lines[0])):
+        problem = []
+        for line in lines:
+            problem.append(line[problem_index])
+        problems.append(problem)
+    return problems
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -40,10 +54,13 @@ def main(arguments):
             for section in arg:
                 sections.append(section)
 
+    problems = []
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
+            problems = read_problems(input_file)
 
     time_start = process_time()
     for section in sections:
