@@ -26,17 +26,46 @@ def read_problems(file):
     return problems
 
 
+def parse_column(lines, col):
+    '''The column could be blank, could have a number, or could have a number and an operator'''
+    number = 0
+    operator = ''
+    for ch in [lines[line][col] for line in range(len(lines))]:
+        if ch.isdigit():
+            number *= 10
+            number += int(ch)
+        elif ch == '+' or ch == '*':
+            operator = ch
+    return (number, operator)
+
+
+def read_cephalopod_problem(lines, col):
+    problem = []
+    operator = ''
+    while col >= 0:
+        number, operator = parse_column(lines, col)
+        col -= 1
+        if number > 0:
+            problem.append(str(number))
+            if operator:
+                problem.append(operator)
+                return (problem, col)
+    return ()
+
+
+
 def read_cephalopod_problems(file):
     lines = []
     for line in file:
-        lines.append(line.split())
+        lines.append(line.strip('\n'))
 
     problems = []
-    for problem_index in range(len(lines[0])):
-        problem = []
-        for line in lines:
-            problem.append(line[problem_index])
-        problems.append(problem)
+    col = len(lines[0])-1
+    while (col >= 0):
+        problem, col = read_cephalopod_problem(lines, col)
+        if problem:
+            problems.append(problem)
+
     return problems
 
 
