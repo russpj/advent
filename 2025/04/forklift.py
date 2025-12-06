@@ -32,6 +32,12 @@ def find_movable_rolls(floor, threshold):
     return moveable_rolls
 
 
+def remove_rolls(floor, rolls):
+    for roll in rolls:
+        row, col = roll
+        floor[row] = floor[row][:col] + 'x' + floor[row][col+1:]
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --section [a|b] --file [input file]'
@@ -73,6 +79,15 @@ def main(arguments):
         if section == 'a':
             moveable_rolls = find_movable_rolls(floor, 4)
             print(f'{len(moveable_rolls)} rolls are moveable')
+
+        if section == 'b':
+            count_of_rolls = 0
+            moveable_rolls = find_movable_rolls(floor, 4)
+            while moveable_rolls:
+                count_of_rolls += len(moveable_rolls)
+                remove_rolls(floor, moveable_rolls)
+                moveable_rolls = find_movable_rolls(floor, 4)
+            print(f'{count_of_rolls} rolls are moveable over many turns')
 
     if verbose:
         print('Debugging output goes here')
