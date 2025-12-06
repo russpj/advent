@@ -72,16 +72,16 @@ def main(arguments):
 
     problems = []
 
-    if input_file_name:
-        with open(input_file_name, 'r') as input_file:
-            if verbose:
-                print(f'Opened {input_file_name} for {app_name}')
-            problems = read_problems(input_file)
-
     time_start = process_time()
     for section in sections:
         print(f'Processing section {section}')
         if section == 'a':
+            if input_file_name:
+                with open(input_file_name, 'r') as input_file:
+                    if verbose:
+                        print(f'Opened {input_file_name} for {app_name}')
+                    problems = read_problems(input_file)
+
             grand_total = 0
             for problem in problems:
                 grand_total += solve_problem(problem)
