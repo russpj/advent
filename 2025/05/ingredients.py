@@ -13,6 +13,9 @@ app_name = 'ingredients.py'
 
 
 def in_range(item, ranges):
+    for range in ranges:
+        if item > range[0] and item <= range[1]:
+            return True
     return False
 
 
