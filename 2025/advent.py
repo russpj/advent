@@ -42,7 +42,8 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
-            print(f'Opened {input_file_name} for {app_name}')
+            if verbose:
+                print(f'Opened {input_file_name} for {app_name}')
 
     time_start = process_time()
     for section in sections:
