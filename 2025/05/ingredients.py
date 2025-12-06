@@ -7,6 +7,7 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
+from operator import itemgetter
 
 
 app_name = 'ingredients.py'
@@ -17,6 +18,21 @@ def in_range(item, ranges):
         if item > range[0] and item <= range[1]:
             return True
     return False
+
+
+def merge_ranges(ranges):
+    ranges.sort()
+    current_range_index = 0
+    while current_range_index < len(ranges)-1:
+        current_range = ranges[current_range_index]
+        next_range = ranges[current_range_index+1]
+        if current_range[1] < next_range[0]:
+            current_range_index += 1
+        else:
+            if current_range[1] <= next_range[1]:
+                ranges[current_range_index] = list((current_range[0], next_range[1]))
+            ranges.pop(current_range_index+1)
+    return
 
 
 def main(arguments):
@@ -74,6 +90,14 @@ def main(arguments):
                 if in_range(ingredient, fresh_ranges):
                     count_of_fresh_ingredients += 1
             print(f'{count_of_fresh_ingredients} of the ingredients were fresh')
+        
+        if section == 'b':
+            merge_ranges(fresh_ranges)
+            count_of_fresh_ids = 0
+            for range in fresh_ranges:
+                count_of_fresh_ids += (range[1]-range[0] + 1)
+            print(f'there are {count_of_fresh_ids} possible fresh ingredients')
+            
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
