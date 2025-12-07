@@ -12,6 +12,29 @@ from time import process_time
 app_name = 'beamsplitter.py'
 
 
+class Manifold:
+    def __init__(self, input_file):
+        manifold = []
+        for row in input_file:
+            manifold.append(row.strip('\n'))
+        self.manifold = manifold
+        self.beams = self.place_beams_at_start('S')
+        self.num_splits = 0
+        return
+
+    def place_beams_at_start(self, start_character):
+        beams = set()
+        first_row = self.manifold[0]
+        start_location = first_row.find(start_character)
+        while start_location != -1:
+            beams.add((0,start_location))
+            start_location = first_row[start_location+1:].find(start_character)
+        return beams
+
+    def move_beams_once():
+        pass
+    
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -45,9 +68,12 @@ def main(arguments):
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
 
-    time_start = process_time()
-    for part in parts:
-        print(f'Processing part {part}')
+            time_start = process_time()
+            for part in parts:
+                print(f'Processing part {part}')
+                if part == '1':
+                    manifold = Manifold(input_file)
+
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
