@@ -37,7 +37,7 @@ class Manifold:
         first_row = self.manifold[0]
         start_location = first_row.find(start_character)
         while start_location != -1:
-            time_lines.add((start_location))
+            time_lines.add((start_location,))
             start_location = first_row[start_location+1:].find(start_character)
         return time_lines
     
@@ -65,7 +65,17 @@ class Manifold:
             for next_beam in next_beams:
                 new_beams.add((next_beam[0], next_beam[1]))
         self.beams = new_beams
-            
+
+        print(f'Moving along the time {len(self.time_lines)} time lines of length {row}')
+        new_time_lines = set()
+        for time_line in self.time_lines:
+            row = len(time_line)-1
+            col = time_line[-1]
+            next_beams = self.propogate_beam(row, col)
+            for beam in next_beams:
+                new_time_lines.add(time_line + (beam[1],))
+        if new_time_lines:
+            self.time_lines = new_time_lines            
         return
     
 
@@ -99,17 +109,19 @@ def main(arguments):
 
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
+            time_start = process_time()
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
+            manifold = Manifold(input_file)
+            while manifold.beams:
+                manifold.move_beams_once()
 
-            time_start = process_time()
             for part in parts:
                 print(f'Processing part {part}')
                 if part == '1':
-                    manifold = Manifold(input_file)
-                    while manifold.beams:
-                        manifold.move_beams_once()
                     print(f'the beam was split {manifold.num_splits} times')
+                if part == '2':
+                    print(f'the beam traveled through {len(manifold.time_lines)} time lines')
 
     if verbose:
         print('Debugging output goes here')
