@@ -31,8 +31,22 @@ class Manifold:
             start_location = first_row[start_location+1:].find(start_character)
         return beams
 
-    def move_beams_once():
-        pass
+    def move_beams_once(self):
+        new_beams = set()
+        for beam in self.beams:
+            row = beam[0]
+            col = beam[1]
+            if row+1 < len(self.manifold):
+                if self.manifold[row+1][col] == '^':
+                    self.num_splits += 1
+                    if col-1 >= 0:
+                        new_beams.add((row+1, col-1))
+                    if col+1 < len(self.manifold[row+1]):
+                        new_beams.add((row+1, col+1))
+                else:
+                    new_beams.add((row+1, col))
+        self.beams = new_beams
+        return
     
 
 def main(arguments):
@@ -73,6 +87,9 @@ def main(arguments):
                 print(f'Processing part {part}')
                 if part == '1':
                     manifold = Manifold(input_file)
+                    while manifold.beams:
+                        manifold.move_beams_once()
+                    print(f'the beam was split {manifold.num_splits} times')
 
     if verbose:
         print('Debugging output goes here')
