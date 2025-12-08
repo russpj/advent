@@ -81,15 +81,15 @@ def main(arguments):
             for part in arg:
                 parts.append(part)
 
-    num_trials = 0
+    num_merges = 0
     boxes = []
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
             for line in input_file:
-                if num_trials == 0:
-                    num_trials = int(line)
+                if num_merges == 0:
+                    num_merges = int(line)
                 else:
                     x, y, z = line.split(',')
                     boxes.append((int(x), int(y), int(z)))
@@ -99,7 +99,7 @@ def main(arguments):
         print(f'Processing part {part}')
         if part == '1':
             circuits = Circuit(boxes, verbose)
-            for pair in circuits.pairs[0:num_trials]:
+            for pair in circuits.pairs[0:num_merges]:
                 circuits.merge_circuits(pair[0], pair[1])
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
