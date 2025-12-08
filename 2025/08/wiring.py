@@ -12,7 +12,7 @@ from time import process_time
 app_name = 'wiring.py'
 
 
-class Circuit:
+class Wiring:
     def __init__(self, boxes, verbose):
         self.boxes = boxes
         # a circuit is a list of box indices
@@ -33,10 +33,10 @@ class Circuit:
         return pairs
     
     def merge_circuits(self, first, second):
-        if first == second:
-            return
         first_circuit = self.map_boxes_circuits[first]
         second_circuit = self.map_boxes_circuits[second]
+        if first_circuit == second_circuit:
+            return
         for box in self.circuits[second_circuit]:
             self.circuits[first_circuit].append(box)
             self.map_boxes_circuits[box] = first
@@ -98,9 +98,11 @@ def main(arguments):
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
-            circuits = Circuit(boxes, verbose)
-            for pair in circuits.pairs[0:num_merges]:
-                circuits.merge_circuits(pair[0], pair[1])
+            wiring = Wiring(boxes, verbose)
+            for pair in wiring.pairs[0:num_merges]:
+                wiring.merge_circuits(pair[0], pair[1])
+            
+            
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
