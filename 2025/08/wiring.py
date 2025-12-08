@@ -40,10 +40,18 @@ def main(arguments):
             for part in arg:
                 parts.append(part)
 
+    num_trials = 0
+    boxes = []
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
+            for line in input_file:
+                if num_trials == 0:
+                    num_trials = int(line)
+                else:
+                    x, y, z = line.split(',')
+                    boxes.append((int(x), int(y), int(z)))
 
     time_start = process_time()
     for part in parts:
