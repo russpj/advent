@@ -47,7 +47,7 @@ class Wiring:
         self.circuits[second_circuit] = []
         return
 
-    def Valid(self, verbose):
+    def valid(self, verbose):
 
         valid = True
         num_boxes = 0
@@ -134,7 +134,25 @@ def main(arguments):
             circuits = sorted(wiring.circuits, key=lambda circuit: -len(circuit))
             result = len(circuits[0])*len(circuits[1])*len(circuits[2])
             print(f'The product of the three longest circuits is {result}')
-            if not wiring.Valid(verbose):
+            if not wiring.valid(verbose):
+                print(f'Something went wrong')
+
+            time_end = process_time()
+            print(f'Time taken for part {part}: {time_end - time_start} seconds.')
+
+        if part == '2':
+            time_start = process_time()
+            wiring = Wiring(boxes, verbose)
+            time_end = process_time()
+            print(f'Time taken for setup: {time_end - time_start} seconds.')
+
+            time_start = process_time()
+            for pair in wiring.pairs[0:num_merges]:
+                wiring.merge_circuits(pair[0], pair[1])
+            circuits = sorted(wiring.circuits, key=lambda circuit: -len(circuit))
+            result = len(circuits[0])*len(circuits[1])*len(circuits[2])
+            print(f'The product of the three longest circuits is {result}')
+            if not wiring.valid(verbose):
                 print(f'Something went wrong')
 
             time_end = process_time()
