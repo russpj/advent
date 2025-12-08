@@ -15,7 +15,10 @@ app_name = 'wiring.py'
 class Circuit:
     def __init__(self, boxes, verbose):
         self.boxes = boxes
+        # a circuit is a list of box indices
         self.circuits = [[index] for index in range(len(boxes))]
+        # the map associates each box with a circuit
+        self.map_boxes_circuits = [index for index in range(len(boxes))]
         self.pairs = self.find_pairs()
         if verbose:
             for pair in self.pairs:
@@ -28,6 +31,17 @@ class Circuit:
                  for x in range(len(self.boxes)) for y in range(x)]
         pairs.sort(key=lambda pair: pair[2])
         return pairs
+    
+    def merge_circuits(self, first, second):
+        if first == second:
+            return
+        first_circuit = self.map_boxes_circuits[first]
+        second_circuit = self.map_boxes_circuits[second]
+        for box in self.circuits[second_circuit]:
+            self.circuits[first_circuit].append(box)
+            self.map_boxes_circuits[box] = first
+        self.circuits[second_circuit] = []
+        return
 
 
 def distance_squared(boxes, first, second):
@@ -85,6 +99,8 @@ def main(arguments):
         print(f'Processing part {part}')
         if part == '1':
             circuits = Circuit(boxes, verbose)
+            for pair in circuits.pairs[0:num_trials]:
+                circuits.merge_circuits(pair[0], pair[1])
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
