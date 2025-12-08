@@ -12,6 +12,24 @@ from time import process_time
 app_name = 'wiring.py'
 
 
+class Circuit:
+    def __init__(self, boxes, verbose):
+        self.boxes = boxes
+        self.circuits = [[index] for index in range(len(boxes))]
+        self.pairs = self.find_pairs()
+        if verbose:
+            for pair in self.pairs:
+                first = boxes[pair[0]]
+                second = boxes[pair[1]]
+                print(f'({first}, {second})')
+        
+    def find_pairs(self):
+        pairs = [(x, y, distance_squared(self.boxes, x, y)) 
+                 for x in range(len(self.boxes)) for y in range(x)]
+        pairs.sort(key=lambda pair: pair[2])
+        return pairs
+
+
 def distance_squared(boxes, first, second):
     first_box = boxes[first]
     second_box = boxes[second]
@@ -66,13 +84,7 @@ def main(arguments):
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
-            pairs = [(x, y, distance_squared(boxes, x, y)) for x in range(len(boxes)) for y in range(x)]
-            pairs.sort(key=lambda pair: pair[2])
-            if verbose:
-                for pair in pairs:
-                    first = boxes[pair[0]]
-                    second = boxes[pair[1]]
-                    print(f'({first}, {second})')
+            circuits = Circuit(boxes, verbose)
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
