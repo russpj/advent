@@ -120,14 +120,14 @@ def main(arguments):
                     x, y, z = line.split(',')
                     boxes.append((int(x), int(y), int(z)))
     
-    time_start = process_time()
-    wiring = Wiring(boxes, verbose)
-    time_end = process_time()
-    print(f'Time taken for setup: {time_end - time_start} seconds.')
-
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
+            time_start = process_time()
+            wiring = Wiring(boxes, verbose)
+            time_end = process_time()
+            print(f'Time taken for setup: {time_end - time_start} seconds.')
+
             time_start = process_time()
             for pair in wiring.pairs[0:num_merges]:
                 wiring.merge_circuits(pair[0], pair[1])
