@@ -119,12 +119,16 @@ def main(arguments):
                 else:
                     x, y, z = line.split(',')
                     boxes.append((int(x), int(y), int(z)))
-
+    
     time_start = process_time()
+    wiring = Wiring(boxes, verbose)
+    time_end = process_time()
+    print(f'Time taken for setup: {time_end - time_start} seconds.')
+
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
-            wiring = Wiring(boxes, verbose)
+            time_start = process_time()
             for pair in wiring.pairs[0:num_merges]:
                 wiring.merge_circuits(pair[0], pair[1])
             circuits = sorted(wiring.circuits, key=lambda circuit: -len(circuit))
@@ -133,9 +137,8 @@ def main(arguments):
             if not wiring.Valid(verbose):
                 print(f'Something went wrong')
 
-    time_end = process_time()
-    print(f'Time taken: {time_end - time_start} seconds.')
-
+            time_end = process_time()
+            print(f'Time taken for part {part}: {time_end - time_start} seconds.')
     return
 
 
