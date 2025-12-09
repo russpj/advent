@@ -56,14 +56,14 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
-            tiles = [parse_pair(location) for location in input_file]
+            red_tiles = [parse_pair(location) for location in input_file]
 
     time_start = process_time()
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
-            areas = [area(tiles, first, second)
-                       for first in range(len(tiles)) 
+            areas = [area(red_tiles, first, second)
+                       for first in range(len(red_tiles)) 
                        for second in range(first)]
             areas.sort(reverse=True)
             print(f'The largest area is {areas[0]}')
