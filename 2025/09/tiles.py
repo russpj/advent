@@ -12,6 +12,11 @@ from time import process_time
 app_name = 'tiles.py'
 
 
+def parse_pair(line):
+    pair = line.strip().split(',')
+    return (int(pair[0]), int(pair[1]))
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -44,7 +49,7 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
-            tiles = [location.strip().split(',') for location in input_file]
+            tiles = [parse_pair(location) for location in input_file]
 
     time_start = process_time()
     for part in parts:
