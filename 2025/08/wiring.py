@@ -20,6 +20,7 @@ class Wiring:
         # the map associates each box with a circuit
         self.map_boxes_circuits = [index for index in range(len(boxes))]
         self.pairs = self.find_pairs()
+        self.num_circuits = len(self.circuits)
         if verbose and False:
             for pair in self.pairs:
                 first = boxes[pair[0]]
@@ -35,26 +36,27 @@ class Wiring:
     def merge_circuits(self, first, second):
         first_circuit = self.map_boxes_circuits[first]
         second_circuit = self.map_boxes_circuits[second]
-        if first_circuit == 7:
-            pass
-        if second_circuit == 7:
-            pass
         if first_circuit == second_circuit:
             return
         for box in self.circuits[second_circuit]:
             self.circuits[first_circuit].append(box)
             self.map_boxes_circuits[box] = first_circuit
         self.circuits[second_circuit] = []
+        self.num_circuits -= 1
         return
 
     def valid(self, verbose):
 
         valid = True
         num_boxes = 0
+        num_circuits = 0
         for circuit_index in range(len(self.circuits)):
             circuit = self.circuits[circuit_index]
             # the sum of the circuits should be the number of boxes 
             num_boxes += len(circuit)
+            # the number of non-empty circuits should be self.num_circuits
+            if (len(circuit)):
+                num_circuits += 1
             # each box in a circuit should point back to the 
             for box in circuit:
                 if self.map_boxes_circuits[box] != circuit_index:
@@ -66,6 +68,11 @@ class Wiring:
             valid = False
             if (verbose):
                 print(f'The circuits contained {num_boxes} instead of {len(self.boxes)} boxes')
+
+        if num_circuits != self.num_circuits:
+            valid = False
+            if (verbose):
+                print(f'We counted {num_circuits} valid circuits, but only tracked {self.num_circuits}')
 
         return valid
 
@@ -147,11 +154,14 @@ def main(arguments):
             print(f'Time taken for setup: {time_end - time_start} seconds.')
 
             time_start = process_time()
-            for pair in wiring.pairs[0:num_merges]:
+            for pair in wiring.pairs:
                 wiring.merge_circuits(pair[0], pair[1])
-            circuits = sorted(wiring.circuits, key=lambda circuit: -len(circuit))
-            result = len(circuits[0])*len(circuits[1])*len(circuits[2])
-            print(f'The product of the three longest circuits is {result}')
+                if wiring.num_circuits == 1:
+                    break
+            first_box = wiring.boxes[pair[0]]
+            second_box = wiring.boxes[pair[1]]
+            result = first_box[0]*second_box[0]
+            print(f'The distance factor for the final pair is {result}')
             if not wiring.valid(verbose):
                 print(f'Something went wrong')
 
