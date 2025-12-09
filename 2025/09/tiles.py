@@ -17,6 +17,13 @@ def parse_pair(line):
     return (int(pair[0]), int(pair[1]))
 
 
+def area(tiles, first_tile, second_tile):
+    first = tiles[first_tile]
+    second = tiles[second_tile]
+    area = (abs(first[0]-second[0])+1)*(abs(first[1]-second[1])+1)
+    return area
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -54,6 +61,13 @@ def main(arguments):
     time_start = process_time()
     for part in parts:
         print(f'Processing part {part}')
+        if part == '1':
+            areas = [area(tiles, first, second)
+                       for first in range(len(tiles)) 
+                       for second in range(first)]
+            areas.sort(reverse=True)
+            print(f'The largest area is {areas[0]}')
+
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
