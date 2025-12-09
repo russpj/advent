@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
-# advent
-'''Advent of code (2025) template'''
+# tiles
+'''Advent of code (2025) 09 floor tiles'''
 
 
 from sys import stdin, stdout, stderr, argv
@@ -9,7 +9,7 @@ from getopt import getopt, GetoptError
 from time import process_time
 
 
-app_name = 'advent.py'
+app_name = 'tiles.py'
 
 
 def main(arguments):
