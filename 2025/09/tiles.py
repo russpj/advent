@@ -44,6 +44,7 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
+            tiles = [location.strip().split(',') for location in input_file]
 
     time_start = process_time()
     for part in parts:
