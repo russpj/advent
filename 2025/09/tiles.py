@@ -24,6 +24,30 @@ def area(tiles, first_tile, second_tile):
     return area
 
 
+class Scan_lines:
+    def __init__(self, path):
+        self.path = path
+        self.scan_lines = self.find_scan_lines()
+        return
+    
+    def find_scan_lines(self):
+        edges = []
+
+        for path_index in range(len(self.path)):
+            next_index = (path_index + 1)%len(self.path)
+            first_corner = self.path[path_index]
+            second_corner = self.path[next_index]
+            if first_corner[1] == second_corner[1]:
+                # this is a horizontal edge
+                edges.append((first_corner[1],                             
+                              (min(first_corner[0], second_corner[0]),                             
+                               max(first_corner[0], second_corner[0]))))
+            edges.sort()
+            row_first = edges[0][0]
+            row_last = edges[-1][0]
+
+        return
+    
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -67,6 +91,10 @@ def main(arguments):
                        for second in range(first)]
             areas.sort(reverse=True)
             print(f'The largest area is {areas[0]}')
+
+        if part == '2':
+            scan_lines = Scan_lines(red_tiles)
+            pass
 
     if verbose:
         print('Debugging output goes here')
