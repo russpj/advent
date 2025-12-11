@@ -42,11 +42,40 @@ class Scan_lines:
                 edges.append((first_corner[1],                             
                               (min(first_corner[0], second_corner[0]),                             
                                max(first_corner[0], second_corner[0]))))
-            edges.sort()
-            row_first = edges[0][0]
-            row_last = edges[-1][0]
+        edges.sort()
+        first_row = edges[0][0]
+        last_row = edges[-1][0]
 
+        scan_lines = {}
+        current_row = first_row-1
+        scan_lines[current_row] = []
+        edge_index = 0
+
+        while edge_index < len(edges):
+            edge = edges[edge_index]
+            edge_row = edge[0]
+            for row in range(current_row, edge_row):            
+                scan_lines[row] = scan_lines[current_row].copy()
+            scan_line = scan_lines[current_row].copy()
+            for col in range(edge[1][0], edge[1][1]+1):
+                if col not in scan_line:
+                    scan_line.append(col)
+                else:
+                    if self.should_remove_column(edge[1], scan_lines[current_row], col):
+                        scan_line.remove(col)
+            scan_line.sort()
+            scan_lines[edge_row] = scan_line
+            current_row = edge_row
+            edge_index += 1
         return
+    
+    def should_remove_column(self, edge_columns, previous_scan_line, col):
+        if col == edge_columns[0] and col-1 in previous_scan_line:
+            return False
+        if col == edge_columns[-1] and col+1 in previous_scan_line:
+            return False
+        return True
+    
     
 def main(arguments):
     program_name = app_name
