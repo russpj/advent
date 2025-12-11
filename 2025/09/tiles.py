@@ -24,6 +24,15 @@ def area(tiles, first_tile, second_tile):
     return area
 
 
+def rectangle(tiles, first_tile, second_tile):
+    first = tiles[first_tile]
+    second = tiles[second_tile]
+    ul = (min(first[0], second[0]), min(first[1], second[1]))
+    lr = (max(first[0], second[0]), max(first[1], second[1]))
+    area = (lr[0]-ul[0]+1)*(lr[1]-ul[1]+1)
+    return ((ul, lr), area)
+
+
 class Edges:
     def __init__(self, path):
         self.path = path
@@ -100,6 +109,12 @@ def main(arguments):
             print(f'The largest area is {areas[0]}')
 
         if part == '2':
+            rectangles = [rectangle(red_tiles, first, second)
+                       for first in range(len(red_tiles)) 
+                       for second in range(first)]
+            rectangles.sort(key=lambda rectangle: -rectangle[1])
+            if verbose:
+                print(f'Found {len(rectangles)} rectangles')
             edges = Edges(red_tiles)
             if verbose:
                 print(f'Found {len(edges.horizontal_edges)} horizontal edges ', end='')
