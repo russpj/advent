@@ -63,7 +63,7 @@ class Scan_lines:
         while edge_index < len(edges):
             edge = edges[edge_index]
             edge_row = edge[0]
-            for row in range(current_row, edge_row):            
+            for row in range(current_row+1, edge_row):            
                 scan_lines[row] = scan_lines[current_row].copy()
             scan_line = scan_lines[current_row].copy()
             for col in range(edge[1][0], edge[1][1]+1):
