@@ -24,7 +24,7 @@ def area(tiles, first_tile, second_tile):
     return area
 
 
-class Scan_lines:
+class Edges:
     def __init__(self, path):
         self.path = path
         self.scan_lines = self.find_scan_lines()
@@ -93,7 +93,7 @@ def main(arguments):
             print(f'The largest area is {areas[0]}')
 
         if part == '2':
-            scan_lines = Scan_lines(red_tiles)
+            scan_lines = Edges(red_tiles)
             pass
 
     if verbose:
