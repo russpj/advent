@@ -27,25 +27,32 @@ def area(tiles, first_tile, second_tile):
 class Edges:
     def __init__(self, path):
         self.path = path
-        self.scan_lines = self.find_scan_lines()
+        self.scan_lines = self.find_edges()
         return
     
-    def find_scan_lines(self):
-        edges = []
+    def find_edges(self):
+        horizontal_edges = []
+        vertical_edges = []
 
         for path_index in range(len(self.path)):
             next_index = (path_index + 1)%len(self.path)
-            first_corner = self.path[path_index]
-            second_corner = self.path[next_index]
-            if first_corner[1] == second_corner[1]:
+            first_end = self.path[path_index]
+            second_end = self.path[next_index]
+            if first_end[1] == second_end[1]:
                 # this is a horizontal edge
-                edges.append((first_corner[1],                             
-                              (min(first_corner[0], second_corner[0]),                             
-                               max(first_corner[0], second_corner[0]))))
-            edges.sort()
-            row_first = edges[0][0]
-            row_last = edges[-1][0]
-
+                horizontal_edges.append((first_end[1],                             
+                              (min(first_end[0], second_end[0]),                             
+                               max(first_end[0], second_end[0]))))
+            elif first_end[0] == second_end[0]:
+                # this is a vertical edge
+                vertical_edges.append((first_end[0],                             
+                              (min(first_end[1], second_end[1]),                             
+                               max(first_end[1], second_end[1]))))
+                
+        horizontal_edges.sort()
+        vertical_edges.sort()
+        self.horizontal_edges = horizontal_edges
+        self.vertical_edges = vertical_edges
         return
     
 def main(arguments):
@@ -93,7 +100,10 @@ def main(arguments):
             print(f'The largest area is {areas[0]}')
 
         if part == '2':
-            scan_lines = Edges(red_tiles)
+            edges = Edges(red_tiles)
+            if verbose:
+                print(f'Found {len(edges.horizontal_edges)} horizontal edges ', end='')
+                print(f'and {len(edges.vertical_edges)} vertical edges')
             pass
 
     if verbose:
