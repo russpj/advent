@@ -64,6 +64,19 @@ class Edges:
         self.vertical_edges = vertical_edges
         return
     
+    def find_vertical_edge(self, column):
+        '''Find first vertical edge at or to the right of the given column'''
+        index = self.find_edge(self.vertical_edges, column)
+        return index
+    
+    def find_horizontal_edge(self, row):
+        '''Find first horizontal edge at or below the given row'''
+        index = self.find_edge(self.horizontal_edges, row)
+        return index
+    
+    def find_edge(self, edges, target):
+        return 0
+    
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
