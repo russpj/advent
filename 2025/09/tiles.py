@@ -48,6 +48,28 @@ def find_edge(edges, target):
     return first
 
 
+def does_edge_intersect_range(edge, first, last):
+    if edge[1][1] <= first or edge[1][0] >= last:
+        return False
+    else:
+        return True
+    
+
+def does_any_edge_intersect_range(edges, edge_candidates, range):
+    edge_index = find_edge(edges, edge_candidates[0])
+    if edge_index < len(edges):
+        edge = edges[edge_index]
+        while edge[0] <= edge_candidates[1]:
+            if does_edge_intersect_range(edge, range[0], range[1]):
+                return True
+            edge_index += 1
+            if edge_index < len(edges):
+                edge = edges[edge_index]
+            else:
+                break
+    return False
+
+
 class Edges:
     def __init__(self, path):
         self.path = path
@@ -103,19 +125,14 @@ class Edges:
         right_interior = right_edge-1
         upper_interior = upper_edge+1
         lower_interior = lower_edge-1
-        edge_index = self.find_vertical_edge(left_interior)
-        if edge_index < len(self.vertical_edges):
-            edge = self.vertical_edges[edge_index]
-            while edge[0] <= right_interior:
-                if edge[1][1] <= upper_edge or edge[1][0] >= lower_edge:
-                    pass
-                else:
-                    return False
-                edge_index += 1
-                if edge_index < len(self.vertical_edges):
-                    edge = self.vertical_edges[edge_index]
-                else:
-                    break
+        if does_any_edge_intersect_range(self.vertical_edges, 
+                                         (left_interior, right_interior),
+                                         (upper_edge, lower_edge)):
+            return False
+        if does_any_edge_intersect_range(self.horizontal_edges,
+                                         (upper_interior, lower_interior),
+                                         (left_edge, right_edge)):
+            return False
         return True
     
 def main(arguments):
