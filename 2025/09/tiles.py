@@ -75,7 +75,18 @@ class Edges:
         return index
     
     def find_edge(self, edges, target):
-        return 0
+        first = 0
+        last = len(edges)
+        while first < last:
+            mid = first + (last-first)//2
+            value = edges[mid][0]
+            if value == target:
+                return mid
+            elif value < target:
+                first = mid+1
+            else:
+                last = mid
+        return first
     
 def main(arguments):
     program_name = app_name
@@ -132,10 +143,17 @@ def main(arguments):
             if verbose:
                 print(f'Found {len(edges.horizontal_edges)} horizontal edges ', end='')
                 print(f'and {len(edges.vertical_edges)} vertical edges')
-            pass
+                for edge in [[0]] + edges.horizontal_edges + [[100000]]:
+                    test_col = edge[0]
+                    col_index = edges.find_horizontal_edge(test_col)
+                    if (col_index >= len(edges.horizontal_edges) or 
+                        edges.horizontal_edges[col_index][0] != test_col):
+                        print(f'Looking for {test_col}, found ', end='')
+                        if col_index >= 0 and col_index < len(edges.horizontal_edges):
+                            print(f'{edges.horizontal_edges[col_index][0]}')
+                        else:
+                            print(f'the end of the line')
 
-    if verbose:
-        print('Debugging output goes here')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
