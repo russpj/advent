@@ -33,6 +33,21 @@ def create_rectangle(tiles, first_tile, second_tile):
     return ((ul, lr), area)
 
 
+def find_edge(edges, target):
+    first = 0
+    last = len(edges)
+    while first < last:
+        mid = first + (last-first)//2
+        value = edges[mid][0]
+        if value == target:
+            return mid
+        elif value < target:
+            first = mid+1
+        else:
+            last = mid
+    return first
+
+
 class Edges:
     def __init__(self, path):
         self.path = path
@@ -66,27 +81,13 @@ class Edges:
     
     def find_vertical_edge(self, column):
         '''Find first vertical edge at or to the right of the given column'''
-        index = self.find_edge(self.vertical_edges, column)
+        index = find_edge(self.vertical_edges, column)
         return index
     
     def find_horizontal_edge(self, row):
         '''Find first horizontal edge at or below the given row'''
-        index = self.find_edge(self.horizontal_edges, row)
+        index = find_edge(self.horizontal_edges, row)
         return index
-    
-    def find_edge(self, edges, target):
-        first = 0
-        last = len(edges)
-        while first < last:
-            mid = first + (last-first)//2
-            value = edges[mid][0]
-            if value == target:
-                return mid
-            elif value < target:
-                first = mid+1
-            else:
-                last = mid
-        return first
     
     def contains(self, rectangle): 
         # Check for intersecting edges.
