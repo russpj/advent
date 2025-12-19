@@ -129,10 +129,15 @@ class Edges:
                                          (left_interior, right_interior),
                                          (upper_edge, lower_edge)):
             return False
+        
         if does_any_edge_intersect_range(self.horizontal_edges,
                                          (upper_interior, lower_interior),
                                          (left_edge, right_edge)):
             return False
+        
+        return self.is_interior_rectangle(rectangle)
+    
+    def is_interior_rectangle(self, rectangle):
         return True
     
 def main(arguments):
