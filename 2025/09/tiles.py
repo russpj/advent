@@ -24,7 +24,7 @@ def area(tiles, first_tile, second_tile):
     return area
 
 
-def rectangle(tiles, first_tile, second_tile):
+def create_rectangle(tiles, first_tile, second_tile):
     first = tiles[first_tile]
     second = tiles[second_tile]
     ul = (min(first[0], second[0]), min(first[1], second[1]))
@@ -88,6 +88,9 @@ class Edges:
                 last = mid
         return first
     
+    def contains(self, rectangle):
+        return True
+    
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -133,7 +136,7 @@ def main(arguments):
             print(f'The largest area is {areas[0]}')
 
         if part == '2':
-            rectangles = [rectangle(red_tiles, first, second)
+            rectangles = [create_rectangle(red_tiles, first, second)
                        for first in range(len(red_tiles)) 
                        for second in range(first)]
             rectangles.sort(key=lambda rectangle: -rectangle[1])
@@ -153,6 +156,14 @@ def main(arguments):
                             print(f'{edges.horizontal_edges[col_index][0]}')
                         else:
                             print(f'the end of the line')
+            for rectangle in rectangles:
+                if edges.contains(rectangle):
+                    print(f'found a rectangle with area {rectangle[1]}')
+                    break
+                else:
+                    if verbose:
+                        print(f'a rectangle with area {rectangle[1]}', end='')
+                        print(f' was not contained')
 
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
