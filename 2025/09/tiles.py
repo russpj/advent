@@ -88,7 +88,33 @@ class Edges:
                 last = mid
         return first
     
-    def contains(self, rectangle):
+    def contains(self, rectangle): 
+        # Check for intersecting edges.
+        # If an edge intersects the interior of the rectangle,
+        # it can't be contained.
+        upper_left = rectangle[0][0]
+        lower_right = rectangle[0][1]
+        left_edge = upper_left[0]
+        right_edge = lower_right[0]
+        upper_edge = upper_left[1]
+        lower_edge = lower_right[1]
+        left_interior = left_edge+1
+        right_interior = right_edge-1
+        upper_interior = upper_edge+1
+        lower_interior = lower_edge-1
+        edge_index = self.find_vertical_edge(left_interior)
+        if edge_index < len(self.vertical_edges):
+            edge = self.vertical_edges[edge_index]
+            while edge[0] <= right_interior:
+                if edge[1][1] <= upper_edge or edge[1][0] >= lower_edge:
+                    pass
+                else:
+                    return False
+                edge_index += 1
+                if edge_index < len(self.vertical_edges):
+                    edge = self.vertical_edges[edge_index]
+                else:
+                    break
         return True
     
 def main(arguments):
@@ -158,7 +184,8 @@ def main(arguments):
                             print(f'the end of the line')
             for rectangle in rectangles:
                 if edges.contains(rectangle):
-                    print(f'found a rectangle with area {rectangle[1]}')
+                    print(f'found a rectangle with area {rectangle[1]}', end='')
+                    print(' that is contained in the region')
                     break
                 else:
                     if verbose:
