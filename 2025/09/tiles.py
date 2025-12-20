@@ -70,6 +70,10 @@ def does_any_edge_intersect_range(edges, edge_candidates, range):
     return False
 
 
+def count_edges_before_value(edges, value):
+    return 1
+
+
 class Edges:
     def __init__(self, path):
         self.path = path
@@ -138,6 +142,14 @@ class Edges:
         return self.is_interior_rectangle(rectangle)
     
     def is_interior_rectangle(self, rectangle):
+        upper_left = rectangle[0][0]
+        lower_right = rectangle[0][1]
+        mid_col = upper_left[0] + (lower_right[0]-upper_left[0])//2
+        mid_row = upper_left[1] + (lower_right[1]-upper_left[1])//2
+        if count_edges_before_value(self.vertical_edges, mid_col)%2 == 0:
+            return False
+        if count_edges_before_value(self.horizontal_edges, mid_row)%2 == 0:
+            return False
         return True
     
 def main(arguments):
