@@ -12,6 +12,23 @@ from time import process_time
 app_name = 'buttons.py'
 
 
+def parse_machine(line):
+    button_rules = []
+    segments = line.split()
+    for segment in segments:
+        if segment[0] == '[':
+            # parse the target light configuration
+            target_lights = segment[1:-1]
+        if segment[0] == '(':
+            # parse a button rule
+            rule = [int(x) for x in segment[1:-1].split(',')]
+            button_rules.append(rule)
+        if segment[0] == '{':
+            # parse joltage requirement 
+            joltages = [int(x) for x in segment[1:-1].split(',')]
+    return (target_lights, button_rules, joltages) 
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -40,10 +57,14 @@ def main(arguments):
             for part in arg:
                 parts.append(part)
 
+    machines = []
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
+            for line in input_file:
+                machines.append(parse_machine(line))
 
     time_start = process_time()
     for part in parts:
