@@ -7,6 +7,7 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
+from collections import deque
 
 
 app_name = 'buttons.py'
@@ -26,7 +27,18 @@ def parse_machine(line):
         if segment[0] == '{':
             # parse joltage requirement 
             joltages = [int(x) for x in segment[1:-1].split(',')]
-    return (target_lights, button_rules, joltages) 
+    return (tuple(target_lights), tuple(button_rules), tuple(joltages)) 
+
+
+def click_buttons(machine):
+    target_lights = machine[0]
+    button_rules = machine[1]
+    initial_lights = '.'*len(target_lights)
+    click_result = (0, initial_lights)
+    click_results = deque()
+    click_results.append(click_result)
+    click_result = click_results.popleft()
+    return click_result[0]
 
 
 def main(arguments):
@@ -69,8 +81,11 @@ def main(arguments):
     time_start = process_time()
     for part in parts:
         print(f'Processing part {part}')
-    if verbose:
-        print('Debugging output goes here')
+        if part == '1':
+            button_clicks = 0
+            for machine in machines:
+                button_clicks += click_buttons(machine)
+            print(f'It took {button_clicks} button clicks to light the lights correctly.')
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
