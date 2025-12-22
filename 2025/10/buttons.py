@@ -52,7 +52,7 @@ def apply_rule(light_state, rule):
     return ''.join(lights)
 
 
-def click_buttons(machine):
+def click_buttons_lights(machine):
     target_lights = machine[0]
     button_rules = machine[1]
     initial_lights = '.'*len(target_lights)
@@ -116,7 +116,7 @@ def main(arguments):
         if part == '1':
             button_clicks = 0
             for machine in machines:
-                button_clicks += click_buttons(machine)
+                button_clicks += click_buttons_lights(machine)
                 if verbose:
                     print(f'{button_clicks} so far ...')
             print(f'It took {button_clicks} button clicks to light the lights correctly.')
