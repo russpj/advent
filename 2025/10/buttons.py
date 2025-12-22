@@ -59,6 +59,7 @@ def click_buttons(machine):
     click_result = (0, initial_lights)
     click_results = deque()
     click_results.append(click_result)
+    queued_targets = set()
 
     while deque:
         previous_clicks, light_state = click_results.popleft()
@@ -66,7 +67,9 @@ def click_buttons(machine):
             click_result = apply_rule(light_state, rule)
             if click_result == target_lights:
                 return previous_clicks+1
-            click_results.append((previous_clicks+1, click_result))
+            if not click_result in queued_targets:
+                queued_targets.add(click_result)
+                click_results.append((previous_clicks+1, click_result))
     return click_result[0]
 
 
