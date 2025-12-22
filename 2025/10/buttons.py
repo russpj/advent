@@ -20,10 +20,14 @@ def parse_machine(line):
         if segment[0] == '[':
             # parse the target light configuration
             target_lights = segment[1:-1]
+            num_lights = len(target_lights)
         if segment[0] == '(':
             # parse a button rule
-            rule = [int(x) for x in segment[1:-1].split(',')]
-            button_rules.append(rule)
+            toggles = [int(x) for x in segment[1:-1].split(',')]
+            rule = [0]*num_lights
+            for toggle in toggles:
+                rule[toggle] = 1
+            button_rules.append(tuple(rule))
         if segment[0] == '{':
             # parse joltage requirement 
             joltages = [int(x) for x in segment[1:-1].split(',')]
@@ -41,7 +45,7 @@ def toggle_light(light):
 def apply_rule(light_state, rule):
     lights = []
     for light_index in range(len(light_state)):
-        if light_index in rule:
+        if rule[light_index]:
             lights.append(toggle_light(light_state[light_index]))
         else:
             lights.append(light_state[light_index])
