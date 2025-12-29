@@ -8,6 +8,7 @@ from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
 from collections import deque
+from functools import cache
 
 
 app_name = 'buttons.py'
@@ -42,7 +43,7 @@ def toggle_light(light):
     return light
 
 
-def apply_rule(light_state, rule):
+def apply_rule_lights(light_state, rule):
     lights = []
     for light_index in range(len(light_state)):
         if rule[light_index]:
@@ -50,6 +51,13 @@ def apply_rule(light_state, rule):
         else:
             lights.append(light_state[light_index])
     return ''.join(lights)
+
+
+def apply_rule_joltage(joltage_state, rule):
+    joltages = [joltage for joltage in joltage_state]
+    for joltage_index in range(len(joltage_state)):
+        joltages[joltage_index] += rule[joltage_index]
+    return tuple(joltages)
 
 
 def click_buttons_lights(machine):
@@ -61,37 +69,129 @@ def click_buttons_lights(machine):
     click_results.append(click_result)
     queued_targets = set()
 
-    while deque:
+    while click_results:
         previous_clicks, light_state = click_results.popleft()
         for rule in button_rules:
-            click_result = apply_rule(light_state, rule)
+            click_result = apply_rule_lights(light_state, rule)
             if click_result == target_lights:
                 return previous_clicks+1
             if not click_result in queued_targets:
                 queued_targets.add(click_result)
                 click_results.append((previous_clicks+1, click_result))
-    return click_result[0]
+    return
 
 
-def click_buttons_joltages(machine):
-    target_lights = machine[0]
+def joltages_too_high(joltages, target_joltages):
+    for joltage_index in range(len(joltages)):
+        if joltages[joltage_index] > target_joltages[joltage_index]:
+            return True
+    return False
+
+
+def click_buttons_joltages_old(machine, verbose):
+    target_joltages = machine[2]
     button_rules = machine[1]
-    initial_lights = '.'*len(target_lights)
-    click_result = (0, initial_lights)
+    initial_joltages = [0]*len(target_joltages)
+    click_result = (0, initial_joltages)
     click_results = deque()
     click_results.append(click_result)
     queued_targets = set()
+    if verbose:
+        last_clicks = 0
 
-    while deque:
-        previous_clicks, light_state = click_results.popleft()
+    while click_results:
+        previous_clicks, joltage_state = click_results.popleft()
+        if verbose and previous_clicks > last_clicks:
+            last_clicks = previous_clicks
+            print(f'{last_clicks} clicks, {len(click_results)} queued states')
         for rule in button_rules:
-            click_result = apply_rule(light_state, rule)
-            if click_result == target_lights:
+            click_result = apply_rule_joltage(joltage_state, rule)
+            if click_result == target_joltages:
                 return previous_clicks+1
             if not click_result in queued_targets:
-                queued_targets.add(click_result)
-                click_results.append((previous_clicks+1, click_result))
-    return click_result[0]
+                if not joltages_too_high(click_result, target_joltages):
+                    queued_targets.add(click_result)
+                    click_results.append((previous_clicks+1, click_result))
+                else:
+                    pass
+            else:
+                pass
+    return
+
+
+def click_buttons_joltages(machine, verbose):
+    rules = machine[1]
+    target_joltages = machine[2]
+    round = max(target_joltages)
+    while round < 100:
+        if satisfy(round, target_joltages, rules):
+            return round
+        round += 1
+    return round
+
+
+def next_digits(digits, sum_digits):
+    digit_index = 0
+
+    0, 0, 0, 3
+    0, 0, 1, 2
+    0, 0, 2, 1
+    0, 0, 3, 0
+    0, 1, 0, 2
+    0, 1, 1, 1
+    0, 1, 2, 0
+    0, 2, 0, 1
+    0, 2, 1, 0
+    0, 3, 0, 0
+    1, 0, 0, 2
+    1, 0, 1, 1
+    1, 0, 2, 0
+    1, 1, 0, 1
+    1, 1, 1, 0
+    1, 2, 0, 0
+    2, 0, 0, 1
+    2, 0, 1, 0
+    2, 1, 0, 0
+    3, 0, 0, 0
+
+
+    return False
+
+
+def odometer(num_digits, range_digits):
+    if num_digits == 1:
+        return [range_digits]
+    for trial in range(range_digits):
+        for more_digits in odometer(num_digits-1, range_digits-trial):
+            digits = [trial] + more_digits
+            yield digits
+    return
+
+
+def reverse_rule(rule, joltages):
+    reversal = [joltages[i] - rule[i] for i in range(len(rule))]
+    return tuple(reversal)
+
+
+def all_zero(numbers):
+    return all([number==0 for number in numbers])
+
+
+def any_negative(numbers):
+    return any([number < 0 for number in numbers])
+
+@cache
+def satisfy(rounds_left, current_joltages, rules):
+    if rounds_left == 0:
+        return all_zero(current_joltages)
+    if any_negative(current_joltages):
+        return False
+    for rule in rules:
+        joltages = reverse_rule(rule, current_joltages)
+        satisfied = satisfy(rounds_left-1, joltages, rules)
+        if satisfied:
+            return True
+    return False
 
 
 def main(arguments):
@@ -144,10 +244,15 @@ def main(arguments):
         if part == '2':
             button_clicks = 0
             for machine in machines:
-                button_clicks += click_buttons_joltages(machine)
+                button_clicks += click_buttons_joltages(machine, verbose)
                 if verbose:
                     print(f'{button_clicks} so far ...')
             print(f'It took {button_clicks} button clicks to set the joltages correctly.')
+        if part == '3':
+            test_cases = ((3, 3), (6, 7), (6, 10), (5, 12), (4, 11))
+            for test in test_cases:
+                for answer in odometer(test[0], test[1]):
+                    print(answer)
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
