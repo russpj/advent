@@ -74,12 +74,30 @@ def click_buttons_lights(machine):
     return
 
 
+def min_affected_joltage(rule, joltages):
+    min_index = -1
+    for index in range(len(rule)):
+        if rule[index]:
+            if min_index == -1:
+                min_index = index
+            elif joltages[index] < joltages[min_index]:
+                min_index = index
+    return joltages[min_index]
+
+
+def sort_by_min_affected_joltage(rules, joltages):
+    return tuple(sorted(rules, 
+                        key=lambda rule:                    
+                        min_affected_joltage(rule, joltages)))
+
+
 def click_buttons_joltages(machine, verbose):
     rules = machine[1]
     target_joltages = machine[2]
+    sorted_rules = sort_by_min_affected_joltage(rules, target_joltages)
     round = max(target_joltages)
     while round < 100:
-        if satisfy(round, target_joltages, rules):
+        if satisfy(round, target_joltages, sorted_rules):
             return round
         round += 1
     return round
