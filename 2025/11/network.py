@@ -47,11 +47,18 @@ def count_paths_waypoints(graph, start, end, waypoints, verbose):
     queue = deque()
     num_paths = 0
     previous_nodes = tuple()
+    if verbose:
+        last_printed_length = 0
     queue.append((start, previous_nodes))
     while queue:
         this_node = queue.popleft()
         node_value = this_node[0]
         previous_nodes = this_node[1]
+        if verbose:
+            if len(previous_nodes) > last_printed_length:
+                last_printed_length = len(previous_nodes)
+                print(f'The queue is {len(queue)} nodes long', end='')
+                print(f'. This node has a history {len(previous_nodes)} nodes long')
         if node_value == end:
             if all([waypoint in previous_nodes
                     for waypoint in waypoints]):
@@ -74,15 +81,41 @@ def count_paths_waypoints(graph, start, end, waypoints, verbose):
     return num_paths
 
 
+def sorted_destinations(destinations):
+    return sorted(destinations)
+
+
+def flatten_graph(graph):
+    flattened_graph = []
+    for item in graph.items():
+        key = item[0]
+        destinations = tuple(sorted_destinations(item[1]))
+        flattened_graph.append((key, destinations))
+    return flattened_graph
+
+
+def simplify_graph(graph, verbose):
+    if verbose:
+        all_destinations = graph.values()
+        num_edges = sum([len(destinations) for destinations in all_destinations])
+        print(f'the input graph has {len(graph)} nodes and {num_edges} edges')
+
+    new_graph = {}
+    for entry in flatten_graph(graph):
+        new_graph[entry[0]] = entry[1]
+    return new_graph
+
+
 def main(arguments):
     program_name = app_name
-    command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
+    command_line_documentation = f'{program_name} --help --verbose --part [1|2] -b [begin] --file [input file]'
     verbose = False
     input_file_name = ''
     parts = []
+    override_begin = ''
 
     try:
-        opts, args = getopt(arguments, "hvp:f:", ("help", "verbose", "part=", "file="))
+        opts, args = getopt(arguments, "hvp:b:f:", ("help", "verbose", "part=", "begin=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
@@ -102,22 +135,31 @@ def main(arguments):
             for part in arg:
                 parts.append(part)
 
+        if opt in ('-b', '--begin'):
+            override_begin = arg
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
-            graph = parse_graph(input_file)
+            graph = simplify_graph(parse_graph(input_file), verbose)
 
     time_start = process_time()
     for part in parts:
         print(f'Processing part {part}')
         if part == '1':
-            start = "you"
+            if override_begin:
+                start = override_begin
+            else:
+                start = "you"
             end = "out"
             num_paths = count_paths(graph, start, end)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
         if part == '2':
-            start = "svr"
+            if override_begin:
+                start = override_begin
+            else:
+                start = "svr"
             end = "out"
             waypoints = ("fft", "dac")
             num_paths = count_paths_waypoints(graph, start, end, waypoints, verbose)
