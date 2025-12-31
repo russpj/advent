@@ -51,80 +51,10 @@ def count_paths(graph, start, end, verbose=False):
     return num_paths[end]
 
 
-def add_index(true_index, waypoint_list):
-    new_list = []
-    for index in range(len(waypoint_list)):
-        new_list.append(index == true_index or waypoint_list[index])
-    return tuple(new_list)
-
-
 def count_paths_waypoints(graph, start, end, waypoints, verbose):
-    queue = deque()
-    num_paths = 0
-    previous_nodes = tuple()
-    if verbose:
-        last_printed_length = 0
-    queue.append((start, previous_nodes))
-    while queue:
-        this_node = queue.popleft()
-        node_value = this_node[0]
-        previous_nodes = this_node[1]
-        if verbose:
-            if len(previous_nodes) > last_printed_length:
-                last_printed_length = len(previous_nodes)
-                print(f'The queue is {len(queue)} nodes long', end='')
-                print(f'. This node has a history {len(previous_nodes)} nodes long')
-        if node_value == end:
-            if all([waypoint in previous_nodes
-                    for waypoint in waypoints]):
-                num_paths += 1
-                if verbose:
-                    print(f'the number of paths is up to {num_paths}, ', end='')
-            if verbose:
-                print(f'the queue is {len(queue)} nodes long')
-        else:
-            if node_value in previous_nodes:
-                if verbose:
-                    print(f'found a loop {previous_nodes}: {node_value}')
-            else:
-                new_nodes = list(previous_nodes)
-                new_nodes.append(node_value)
-                previous_nodes = tuple(new_nodes)
-                destinations = graph[node_value]
-                for destination in destinations:
-                    queue.append((destination, previous_nodes))
+    num_paths = 1
+    num_paths *= count_paths(graph, start, end, verbose)
     return num_paths
-
-
-def sorted_destinations(destinations):
-    return sorted(destinations)
-
-
-def flatten_graph(graph):
-    flattened_graph = []
-    for item in graph.items():
-        key = item[0]
-        destinations = tuple(sorted_destinations(item[1]))
-        flattened_graph.append((key, destinations))
-    return flattened_graph
-
-
-def simplify_graph(graph, additional_node, verbose):
-    if verbose:
-        all_destinations = graph.values()
-        num_edges = sum([len(destinations) for destinations in all_destinations])
-        print(f'the input graph has {len(graph)} nodes and {num_edges} edges')
-
-    reserved_nodes = ['you', 'out', 'svr', 'fft', 'dac']
-    if additional_node and not additional_node in reserved_nodes:
-        reserved_nodes.append(additional_node)
-
-    new_graph = {}
-    for entry in flatten_graph(graph):
-        new_graph[entry[0]] = entry[1]
-
-    
-    return new_graph
 
 
 def main(arguments):
@@ -167,7 +97,7 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
-            graph = simplify_graph(parse_graph(input_file), override_begin, verbose)
+            graph = parse_graph(input_file)
 
     time_start = process_time()
     for part in parts:
