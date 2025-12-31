@@ -46,21 +46,21 @@ def add_index(true_index, waypoint_list):
 def count_paths_waypoints(graph, start, end, waypoints):
     queue = deque()
     num_paths = 0
-    waypoint_list = tuple([False]*len(waypoints))
-    queue.append((start, waypoint_list))
+    previous_nodes = tuple()
+    queue.append((start, previous_nodes))
     while queue:
         this_node = queue.popleft()
         node_value = this_node[0]
-        waypoint_list = this_node[1]
-        if node_value in waypoints:
-            waypoint_list = add_index(waypoints.index(node_value), waypoint_list)    
+        previous_nodes = this_node[1]
         if node_value == end:
-            if all(waypoint_list):
+            if all([waypoint in previous_nodes
+                    for waypoint in waypoints]):
                 num_paths += 1
         else:
+            previous_nodes = previous_nodes + (node_value,)
             destinations = graph[node_value]
             for destination in destinations:
-                queue.append((destination, waypoint_list))
+                queue.append((destination, previous_nodes))
     return num_paths
 
 
