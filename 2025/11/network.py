@@ -39,15 +39,18 @@ def count_paths(graph, start, end):
 def count_paths_waypoints(graph, start, end, waypoints):
     queue = deque()
     num_paths = 0
-    queue.append(start)
+    waypoint_list = tuple([False]*len(waypoints))
+    queue.append((start, waypoint_list))
     while queue:
         this_node = queue.popleft()
-        if this_node == end:
+        node_value = this_node[0]
+        waypoint_list = this_node[1]
+        if node_value == end:
             num_paths += 1
         else:
-            destinations = graph[this_node]
+            destinations = graph[node_value]
             for destination in destinations:
-                queue.append(destination)
+                queue.append((destination, waypoint_list))
     return num_paths
 
 
