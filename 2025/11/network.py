@@ -21,7 +21,7 @@ def parse_graph(file):
     return graph
 
 
-def count_paths(graph, start, end):
+def count_paths(graph, start, end, verbose=False):
     queue = deque()
     num_paths = 0
     queue.append(start)
@@ -29,6 +29,11 @@ def count_paths(graph, start, end):
         this_node = queue.popleft()
         if this_node == end:
             num_paths += 1
+            if verbose:
+                print(f'the number of paths from {start} to {end} is now {num_paths}')
+        elif this_node in queue:
+            if verbose:
+                print(f'{this_node} has already been visited')
         else:
             if this_node in graph:
                 destinations = graph[this_node]
@@ -167,7 +172,7 @@ def main(arguments):
                 end = override_end
             else:
                 end = "out"
-            num_paths = count_paths(graph, start, end)
+            num_paths = count_paths(graph, start, end, verbose)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
         if part == '2':
             if override_begin:
