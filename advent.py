@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # {name}
-'''Advent of code ({year}) {name}'''
+'''Advent of code ({year}) day {day} {name}'''
 
 
 from sys import stdin, stdout, stderr, argv
