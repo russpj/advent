@@ -184,11 +184,6 @@ def main(arguments):
                 if verbose:
                     print(f'{button_clicks} so far ...')
             print(f'It took {button_clicks} button clicks to set the joltages correctly.')
-        if part == '3':
-            test_cases = ((3, 3), (6, 7), (6, 10), (5, 12), (4, 11))
-            for test in test_cases:
-                for answer in odometer(test[0], test[1]):
-                    print(answer)
     time_end = process_time()
     print(f'Time taken: {time_end - time_start} seconds.')
 
