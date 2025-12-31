@@ -47,16 +47,21 @@ def walk_paths(graph, start, end, count_paths, verbose=False):
                 if verbose:
                     print(f'the number of paths from {start} to {end} is now {num_paths[end]}')
             else:
-                if count_paths and this_node in graph:
+                if this_node in graph:
                     destinations = graph[this_node]
-                    if this_node not in temp_graph:
-                        temp_graph[this_node] = destinations
-                    for destination in destinations:
-                        if destination in num_paths:
-                            num_paths[destination] += num_paths[this_node]
+                    if count_paths:
+                        if this_node not in temp_graph:
+                            temp_graph[this_node] = destinations
+                        descendants = walk_paths(temp_graph, this_node, end, False, verbose)[1]
+                        descendants.remove(this_node)
+                    else:
+                        descendants = destinations
+                    for descendant in descendants:
+                        if descendant in num_paths:
+                            num_paths[descendant] += num_paths[this_node]
                         else:
-                            queue.append(destination)
-                            num_paths[destination] = num_paths[this_node]
+                            queue.append(descendant)
+                            num_paths[descendant] = num_paths[this_node]
     if end in num_paths:
         count_of_paths = num_paths[end]
     else:
