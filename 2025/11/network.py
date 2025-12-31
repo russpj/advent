@@ -34,26 +34,41 @@ def count_paths(graph, start, end, verbose=False):
     num_paths = {}
     queue.append(start)
     num_paths[start] = 1
+    visited = set()
     while queue:
         this_node = queue.popleft()
-        if this_node in queue:
+        if this_node in visited:
             if verbose:
                 print(f'{this_node} has already been visited {num_paths[this_node]} times')
-        elif this_node == end:
-            if verbose:
-                print(f'the number of paths from {start} to {end} is now {num_paths[end]}')
         else:
-            if this_node in graph:
-                destinations = graph[this_node]
-                for destination in destinations:
-                    queue.append(destination)
-                    add_destination_score(num_paths, destination, num_paths[this_node])
-    return num_paths[end]
+            visited.add(this_node)
+            if this_node == end:
+                if verbose:
+                    print(f'the number of paths from {start} to {end} is now {num_paths[end]}')
+            else:
+                if this_node in graph:
+                    destinations = graph[this_node]
+                    for destination in destinations:
+                        if destination in num_paths:
+                            num_paths[destination] += num_paths[this_node]
+                        else:
+                            queue.append(destination)
+                            num_paths[destination] = num_paths[this_node]
+    if end in num_paths:
+        return num_paths[end]
+    else:
+        return 0
 
 
 def count_paths_waypoints(graph, start, end, waypoints, verbose):
     num_paths = 1
-    num_paths *= count_paths(graph, start, end, verbose)
+    full_path = [start] + list(waypoints) + [end]
+    segments = [(full_path[i], full_path[i+1]) for i in range(len(full_path)-1)]
+    for segment in segments:
+        num_paths_segment = count_paths(graph, segment[0], segment[1], verbose and False)
+        if verbose:
+            print(f'{num_paths_segment} paths from {segment[0]} to {segment[1]}')
+        num_paths *= num_paths_segment
     return num_paths
 
 
