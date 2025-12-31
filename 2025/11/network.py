@@ -55,13 +55,14 @@ def walk_paths(graph, start, end, verbose=False):
                             queue.append(destination)
                             num_paths[destination] = num_paths[this_node]
     if end in num_paths:
-        return num_paths[end]
+        count_paths = num_paths[end]
     else:
-        return 0
+        count_paths = 0
+    return (count_paths, visited)
     
 
 def count_paths(graph, start, end, verbose=False):
-    return walk_paths(graph, start, end, verbose)
+    return walk_paths(graph, start, end, verbose)[0]
 
 
 def count_paths_waypoints(graph, start, end, waypoints, verbose):
