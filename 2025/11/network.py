@@ -29,7 +29,7 @@ def add_destination_score(scores, destination, incoming_score):
     pass
 
 
-def count_paths(graph, start, end, verbose=False):
+def walk_paths(graph, start, end, verbose=False):
     queue = deque()
     num_paths = {}
     queue.append(start)
@@ -58,6 +58,10 @@ def count_paths(graph, start, end, verbose=False):
         return num_paths[end]
     else:
         return 0
+    
+
+def count_paths(graph, start, end, verbose=False):
+    return walk_paths(graph, start, end, verbose)
 
 
 def count_paths_waypoints(graph, start, end, waypoints, verbose):
