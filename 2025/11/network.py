@@ -36,6 +36,21 @@ def count_paths(graph, start, end):
     return num_paths
 
 
+def count_paths_waypoints(graph, start, end, waypoints):
+    queue = deque()
+    num_paths = 0
+    queue.append(start)
+    while queue:
+        this_node = queue.popleft()
+        if this_node == end:
+            num_paths += 1
+        else:
+            destinations = graph[this_node]
+            for destination in destinations:
+                queue.append(destination)
+    return num_paths
+
+
 def main(arguments):
     program_name = app_name
     command_line_documentation = f'{program_name} --help --verbose --part [1|2] --file [input file]'
@@ -77,6 +92,12 @@ def main(arguments):
             start = "you"
             end = "out"
             num_paths = count_paths(graph, start, end)
+            print(f'there were {num_paths} routes from "{start}" to "{end}"')
+        if part == '2':
+            start = "you"
+            end = "out"
+            waypoints = ("fft", "dac")
+            num_paths = count_paths_waypoints(graph, start, end, waypoints)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
     if verbose:
         print('Debugging output goes here')
