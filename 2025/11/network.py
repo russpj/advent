@@ -18,11 +18,22 @@ def parse_graph(file):
     for line in file:
         node1, destinations = line.split(':')
         graph[node1] = destinations.split()
-    return
+    return graph
 
 
-def count_paths(start, end):
-    return 0
+def count_paths(graph, start, end):
+    queue = deque()
+    num_paths = 0
+    queue.append(start)
+    while queue:
+        this_node = queue.popleft()
+        if this_node == end:
+            num_paths += 1
+        else:
+            destinations = graph[this_node]
+            for destination in destinations:
+                queue.append(destination)
+    return num_paths
 
 
 def main(arguments):
@@ -65,7 +76,7 @@ def main(arguments):
         if part == '1':
             start = "you"
             end = "out"
-            num_paths = count_paths(start, end)
+            num_paths = count_paths(graph, start, end)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
     if verbose:
         print('Debugging output goes here')
