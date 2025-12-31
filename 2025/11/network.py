@@ -7,6 +7,7 @@
 from sys import stdin, stdout, stderr, argv
 from getopt import getopt, GetoptError
 from time import process_time
+from collections import deque
 
 
 app_name = 'network.py'
@@ -18,6 +19,10 @@ def parse_graph(file):
         node1, destinations = line.split(':')
         graph[node1] = destinations.split()
     return
+
+
+def count_paths(start, end):
+    return 0
 
 
 def main(arguments):
@@ -57,6 +62,11 @@ def main(arguments):
     time_start = process_time()
     for part in parts:
         print(f'Processing part {part}')
+        if part == '1':
+            start = "you"
+            end = "out"
+            num_paths = count_paths(start, end)
+            print(f'there were {num_paths} routes from "{start}" to "{end}"')
     if verbose:
         print('Debugging output goes here')
     time_end = process_time()
