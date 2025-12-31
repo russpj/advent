@@ -21,25 +21,34 @@ def parse_graph(file):
     return graph
 
 
+def add_destination_score(scores, destination, incoming_score):
+    if destination in scores:
+        scores[destination] += incoming_score
+    else:
+        scores[destination] = incoming_score
+    pass
+
+
 def count_paths(graph, start, end, verbose=False):
     queue = deque()
-    num_paths = 0
+    num_paths = {}
     queue.append(start)
+    num_paths[start] = 1
     while queue:
         this_node = queue.popleft()
-        if this_node == end:
-            num_paths += 1
+        if this_node in queue:
             if verbose:
-                print(f'the number of paths from {start} to {end} is now {num_paths}')
-        elif this_node in queue:
+                print(f'{this_node} has already been visited {num_paths[this_node]} times')
+        elif this_node == end:
             if verbose:
-                print(f'{this_node} has already been visited')
+                print(f'the number of paths from {start} to {end} is now {num_paths[end]}')
         else:
             if this_node in graph:
                 destinations = graph[this_node]
                 for destination in destinations:
                     queue.append(destination)
-    return num_paths
+                    add_destination_score(num_paths, destination, num_paths[this_node])
+    return num_paths[end]
 
 
 def add_index(true_index, waypoint_list):
