@@ -30,9 +30,10 @@ def count_paths(graph, start, end):
         if this_node == end:
             num_paths += 1
         else:
-            destinations = graph[this_node]
-            for destination in destinations:
-                queue.append(destination)
+            if this_node in graph:
+                destinations = graph[this_node]
+                for destination in destinations:
+                    queue.append(destination)
     return num_paths
 
 
@@ -114,14 +115,15 @@ def simplify_graph(graph, additional_node, verbose):
 
 def main(arguments):
     program_name = app_name
-    command_line_documentation = f'{program_name} --help --verbose --part [1|2] -b [begin] --file [input file]'
+    command_line_documentation = f'{program_name} --help --verbose --part [1|2] --begin [begin] --end [end]  --file [input file]'
     verbose = False
     input_file_name = ''
     parts = []
     override_begin = ''
+    override_end = ''
 
     try:
-        opts, args = getopt(arguments, "hvp:b:f:", ("help", "verbose", "part=", "begin=", "file="))
+        opts, args = getopt(arguments, "hvp:b:e:f:", ("help", "verbose", "part=", "begin=", "end=", "file="))
     except GetoptError:
         print(f'Invalid Arguments: {command_line_documentation}')
         exit(2)
@@ -144,6 +146,9 @@ def main(arguments):
         if opt in ('-b', '--begin'):
             override_begin = arg
 
+        if opt in ('-e', '--end'):
+            override_end = arg
+
     if input_file_name:
         with open(input_file_name, 'r') as input_file:
             if verbose:
@@ -158,7 +163,10 @@ def main(arguments):
                 start = override_begin
             else:
                 start = "you"
-            end = "out"
+            if override_end:
+                end = override_end
+            else:
+                end = "out"
             num_paths = count_paths(graph, start, end)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
         if part == '2':
@@ -166,7 +174,10 @@ def main(arguments):
                 start = override_begin
             else:
                 start = "svr"
-            end = "out"
+            if override_end:
+                end = override_end
+            else:
+                end = "out"
             waypoints = ("fft", "dac")
             num_paths = count_paths_waypoints(graph, start, end, waypoints, verbose)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
