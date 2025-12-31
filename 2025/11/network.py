@@ -94,15 +94,21 @@ def flatten_graph(graph):
     return flattened_graph
 
 
-def simplify_graph(graph, verbose):
+def simplify_graph(graph, additional_node, verbose):
     if verbose:
         all_destinations = graph.values()
         num_edges = sum([len(destinations) for destinations in all_destinations])
         print(f'the input graph has {len(graph)} nodes and {num_edges} edges')
 
+    reserved_nodes = ['you', 'out', 'svr', 'fft', 'dac']
+    if additional_node and not additional_node in reserved_nodes:
+        reserved_nodes.append(additional_node)
+
     new_graph = {}
     for entry in flatten_graph(graph):
         new_graph[entry[0]] = entry[1]
+
+    
     return new_graph
 
 
@@ -142,7 +148,7 @@ def main(arguments):
         with open(input_file_name, 'r') as input_file:
             if verbose:
                 print(f'Opened {input_file_name} for {app_name}')
-            graph = simplify_graph(parse_graph(input_file), verbose)
+            graph = simplify_graph(parse_graph(input_file), override_begin, verbose)
 
     time_start = process_time()
     for part in parts:
