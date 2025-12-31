@@ -43,7 +43,7 @@ def add_index(true_index, waypoint_list):
     return tuple(new_list)
 
 
-def count_paths_waypoints(graph, start, end, waypoints):
+def count_paths_waypoints(graph, start, end, waypoints, verbose):
     queue = deque()
     num_paths = 0
     previous_nodes = tuple()
@@ -56,11 +56,21 @@ def count_paths_waypoints(graph, start, end, waypoints):
             if all([waypoint in previous_nodes
                     for waypoint in waypoints]):
                 num_paths += 1
+                if verbose:
+                    print(f'the number of paths is up to {num_paths}, ', end='')
+            if verbose:
+                print(f'the queue is {len(queue)} nodes long')
         else:
-            previous_nodes = previous_nodes + (node_value,)
-            destinations = graph[node_value]
-            for destination in destinations:
-                queue.append((destination, previous_nodes))
+            if node_value in previous_nodes:
+                if verbose:
+                    print(f'found a loop {previous_nodes}: {node_value}')
+            else:
+                new_nodes = list(previous_nodes)
+                new_nodes.append(node_value)
+                previous_nodes = tuple(new_nodes)
+                destinations = graph[node_value]
+                for destination in destinations:
+                    queue.append((destination, previous_nodes))
     return num_paths
 
 
@@ -110,7 +120,7 @@ def main(arguments):
             start = "svr"
             end = "out"
             waypoints = ("fft", "dac")
-            num_paths = count_paths_waypoints(graph, start, end, waypoints)
+            num_paths = count_paths_waypoints(graph, start, end, waypoints, verbose)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
     if verbose:
         print('Debugging output goes here')
