@@ -8,7 +8,8 @@ if [[ -n $1 ]] && [[ -n $2 ]] && [[ -n $3 ]]; then
     if ! [ -d "$1/$2" ]; then
         mkdir $1/$2
     fi
-    cp $1/advent.py $1/$2/$3
+    cp advent.py $1/$2/$3.py
+    sed -i 's/{year}/2025/;s/{name}/network/;s/{day}/11/' $1/$2/$3.py
 else
     echo "mkday.sh {year} {day} {name}"
 fi
