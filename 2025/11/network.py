@@ -36,6 +36,13 @@ def count_paths(graph, start, end):
     return num_paths
 
 
+def add_index(true_index, waypoint_list):
+    new_list = []
+    for index in range(len(waypoint_list)):
+        new_list.append(index == true_index or waypoint_list[index])
+    return tuple(new_list)
+
+
 def count_paths_waypoints(graph, start, end, waypoints):
     queue = deque()
     num_paths = 0
@@ -45,8 +52,11 @@ def count_paths_waypoints(graph, start, end, waypoints):
         this_node = queue.popleft()
         node_value = this_node[0]
         waypoint_list = this_node[1]
+        if node_value in waypoints:
+            waypoint_list = add_index(waypoints.index(node_value), waypoint_list)    
         if node_value == end:
-            num_paths += 1
+            if all(waypoint_list):
+                num_paths += 1
         else:
             destinations = graph[node_value]
             for destination in destinations:
@@ -97,7 +107,7 @@ def main(arguments):
             num_paths = count_paths(graph, start, end)
             print(f'there were {num_paths} routes from "{start}" to "{end}"')
         if part == '2':
-            start = "you"
+            start = "svr"
             end = "out"
             waypoints = ("fft", "dac")
             num_paths = count_paths_waypoints(graph, start, end, waypoints)
